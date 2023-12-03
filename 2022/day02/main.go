@@ -33,8 +33,6 @@ var (
 )
 
 func main() {
-	log.SetFlags(0)
-
 	file, err := os.Open("input.txt")
 	if err != nil {
 		log.Panic(err)

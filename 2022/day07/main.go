@@ -85,7 +85,6 @@ func (d *directory) getSmallestDirToDelete(minSize, haveSize int) int {
 }
 
 func main() {
-	log.SetFlags(0)
 	f, err := os.Open("input.txt")
 	if err != nil {
 		log.Panic(err)

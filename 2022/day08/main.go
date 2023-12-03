@@ -7,7 +7,6 @@ import (
 )
 
 func main() {
-	log.SetFlags(0)
 	f, err := os.Open("input.txt")
 	if err != nil {
 		log.Panic(err)
