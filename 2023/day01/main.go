@@ -1,61 +1,61 @@
 package main
 
 import (
-	"bufio"
-	"log"
-	"os"
-	"strings"
+	"advent/util"
+	"bytes"
+	"time"
 )
 
-var words = []string{
-	"one",
-	"two",
-	"three",
-	"four",
-	"five",
-	"six",
-	"seven",
-	"eight",
-	"nine",
+var words = [][]byte{
+	[]byte("one"),
+	[]byte("two"),
+	[]byte("three"),
+	[]byte("four"),
+	[]byte("five"),
+	[]byte("six"),
+	[]byte("seven"),
+	[]byte("eight"),
+	[]byte("nine"),
 }
 
 func main() {
-	file, err := os.Open("input.txt")
-	if err != nil {
-		log.Panic(err)
-	}
-	defer file.Close()
-	scanner := bufio.NewScanner(file)
+	input := util.ReadInput()
 
-	sum1 := 0
-	sum2 := 0
-	for scanner.Scan() {
-		line := scanner.Text()
-		sum1 += calibrationValue1(line)
-		sum2 += calibrationValue2(line)
+	start := time.Now()
+
+	lines := util.ParseInputLines(input)
+
+	parse := time.Now()
+
+	part1 := 0
+	part2 := 0
+	for _, line := range lines {
+		part1 += calibrationValue1(line)
+		part2 += calibrationValue2(line)
 	}
 
-	log.Printf("The sum of the calibration values for part 1 is %d", sum1)
-	log.Printf("The sum of the calibration values for part 2 is %d", sum2)
+	end := time.Now()
+
+	util.PrintResults(part1, part2, start, parse, end)
 }
 
-func calibrationValue1(line string) int {
-	firstDigitIndex := strings.IndexAny(line, "123456789")
+func calibrationValue1(line []byte) int {
+	firstDigitIndex := bytes.IndexAny(line, "123456789")
 	firstDigit := int(line[firstDigitIndex] - '0')
-	lastDigitIndex := strings.LastIndexAny(line, "123456789")
+	lastDigitIndex := bytes.LastIndexAny(line, "123456789")
 	lastDigit := int(line[lastDigitIndex] - '0')
 	return firstDigit*10 + lastDigit
 }
 
-func calibrationValue2(line string) int {
-	firstDigitIndex := strings.IndexAny(line, "123456789")
+func calibrationValue2(line []byte) int {
+	firstDigitIndex := bytes.IndexAny(line, "123456789")
 	firstDigit := int(line[firstDigitIndex] - '0')
-	lastDigitIndex := strings.LastIndexAny(line, "123456789")
+	lastDigitIndex := bytes.LastIndexAny(line, "123456789")
 	lastDigit := int(line[lastDigitIndex] - '0')
 
 	for wi, word := range words {
-		firstIndex := strings.Index(line, word)
-		lastIndex := strings.LastIndex(line, word)
+		firstIndex := bytes.Index(line, word)
+		lastIndex := bytes.LastIndex(line, word)
 		if firstIndex >= 0 && firstIndex < firstDigitIndex {
 			firstDigitIndex = firstIndex
 			firstDigit = wi + 1

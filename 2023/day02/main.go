@@ -1,11 +1,9 @@
 package main
 
 import (
-	"bufio"
+	"advent/util"
+	"bytes"
 	"log"
-	"os"
-	"strconv"
-	"strings"
 	"time"
 )
 
@@ -21,53 +19,44 @@ type game struct {
 }
 
 func main() {
-	file, err := os.Open("input.txt")
-	if err != nil {
-		log.Panic(err)
-	}
-	defer file.Close()
-	scanner := bufio.NewScanner(file)
+	input := util.ReadInput()
 
 	start := time.Now()
 
+	lines := util.ParseInputLines(input)
 	var games []*game
-	for gameId := 1; scanner.Scan(); gameId++ {
-		line := scanner.Text()
-		g := &game{gameId: gameId}
+	var setLine []byte
+	for gameId, line := range lines {
+		g := &game{gameId: gameId + 1}
 		games = append(games, g)
-		line = line[strings.Index(line, ": ")+2:]
+		_, line, _ = bytes.Cut(line, []byte(": "))
 		for len(line) > 0 {
-			li := strings.Index(line, "; ")
-			if li < 0 {
-				li = len(line)
-			}
-			setLine := line[:li]
-			line = line[min(len(line), li+2):]
+			setLine, line, _ = bytes.Cut(line, []byte("; "))
 			s := &set{}
 			g.sets = append(g.sets, s)
 			for len(setLine) > 0 {
-				ci := strings.Index(setLine, ", ")
+				ci := bytes.Index(setLine, []byte(", "))
 				if ci < 0 {
 					ci = len(setLine)
 				}
 				cubeLine := setLine[:ci]
 				setLine = setLine[min(len(setLine), ci+2):]
-				si := strings.Index(cubeLine, " ")
-				count, err := strconv.Atoi(cubeLine[:si])
-				if err != nil {
-					log.Panic(err)
-				}
-				switch cubeLine[si+1:] {
-				case "red":
+				si := bytes.Index(cubeLine, []byte(" "))
+				count := util.Btoi(cubeLine[:si])
+				color := cubeLine[si+1:]
+				if bytes.Equal(color, []byte("red")) {
 					s.redCount = count
-				case "green":
+				} else if bytes.Equal(color, []byte("green")) {
 					s.greenCount = count
-				case "blue":
+				} else if bytes.Equal(color, []byte("blue")) {
 					s.blueCount = count
+				} else {
+					log.Panicf("Unknown color %s", color)
 				}
 			}
 		}
 	}
+
 	parse := time.Now()
 
 	part1 := 0
@@ -94,10 +83,8 @@ func main() {
 		}
 		part2 += maxRed * maxGreen * maxBlue
 	}
+
 	end := time.Now()
 
-	log.Printf("The sum of the game ids possible is %d", part1)
-	log.Printf("The sum of the power of the sets is %d", part2)
-	log.Printf("Parse time was %v", parse.Sub(start))
-	log.Printf("Execute time was %v", end.Sub(parse))
+	util.PrintResults(part1, part2, start, parse, end)
 }
