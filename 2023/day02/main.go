@@ -24,7 +24,7 @@ func main() {
 	start := time.Now()
 
 	lines := util.ParseInputLines(input)
-	var games []*game
+	games := make([]*game, 0, len(lines))
 	var setLine []byte
 	for gameId, line := range lines {
 		g := &game{gameId: gameId + 1}
