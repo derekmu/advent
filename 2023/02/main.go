@@ -6,6 +6,7 @@ import (
 	"os"
 	"strconv"
 	"strings"
+	"time"
 )
 
 type set struct {
@@ -28,24 +29,36 @@ func main() {
 	defer file.Close()
 	scanner := bufio.NewScanner(file)
 
+	start := time.Now()
+
 	var games []*game
 	for gameId := 1; scanner.Scan(); gameId++ {
 		line := scanner.Text()
 		g := &game{gameId: gameId}
 		games = append(games, g)
-		line = strings.Split(line, ":")[1]
-		setLines := strings.Split(line, ";")
-		for _, setLine := range setLines {
+		line = line[strings.Index(line, ": ")+2:]
+		for len(line) > 0 {
+			li := strings.Index(line, "; ")
+			if li < 0 {
+				li = len(line)
+			}
+			setLine := line[:li]
+			line = line[min(len(line), li+2):]
 			s := &set{}
 			g.sets = append(g.sets, s)
-			cubeLines := strings.Split(setLine, ",")
-			for _, cubeLine := range cubeLines {
-				parts := strings.Split(cubeLine, " ")
-				count, err := strconv.Atoi(parts[1])
+			for len(setLine) > 0 {
+				ci := strings.Index(setLine, ", ")
+				if ci < 0 {
+					ci = len(setLine)
+				}
+				cubeLine := setLine[:ci]
+				setLine = setLine[min(len(setLine), ci+2):]
+				si := strings.Index(cubeLine, " ")
+				count, err := strconv.Atoi(cubeLine[:si])
 				if err != nil {
 					log.Panic(err)
 				}
-				switch parts[2] {
+				switch cubeLine[si+1:] {
 				case "red":
 					s.redCount = count
 				case "green":
@@ -56,6 +69,7 @@ func main() {
 			}
 		}
 	}
+	parse := time.Now()
 
 	part1 := 0
 	part2 := 0
@@ -81,7 +95,10 @@ func main() {
 		}
 		part2 += maxRed * maxGreen * maxBlue
 	}
+	end := time.Now()
 
 	log.Printf("The sum of the game ids possible is %d", part1)
 	log.Printf("The sum of the power of the sets is %d", part2)
+	log.Printf("Parse time was %v", parse.Sub(start))
+	log.Printf("Execute time was %v", end.Sub(parse))
 }
