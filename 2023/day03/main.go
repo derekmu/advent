@@ -5,6 +5,7 @@ import (
 	"log"
 	"os"
 	"strconv"
+	"time"
 )
 
 type num struct {
@@ -33,6 +34,8 @@ func main() {
 	defer file.Close()
 	scanner := bufio.NewScanner(file)
 
+	start := time.Now()
+
 	var lines []string
 	var nums []*num
 	gearMap := make(map[gearIndex]*gear, 10)
@@ -57,6 +60,7 @@ func main() {
 			}
 		}
 	}
+	parse := time.Now()
 
 	sum1 := 0
 	for _, n := range nums {
@@ -95,7 +99,10 @@ func main() {
 			sum2 += g.nums[0] * g.nums[1]
 		}
 	}
+	end := time.Now()
 
 	log.Printf("The sum of the part numbers for part 1 is %d", sum1)
 	log.Printf("The sum of the part numbers for part 2 is %d", sum2)
+	log.Printf("Parse time was %v", parse.Sub(start))
+	log.Printf("Execute time was %v", end.Sub(parse))
 }
