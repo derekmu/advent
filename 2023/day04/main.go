@@ -35,17 +35,11 @@ func main() {
 
 	part1 := 0
 	for _, c := range cards {
-		points := 0
 		wini := 0
 		numi := 0
 		for wini < len(c.winners) && numi < len(c.numbers) {
 			if c.winners[wini] == c.numbers[numi] {
 				c.matches++
-				if points == 0 {
-					points = 1
-				} else {
-					points *= 2
-				}
 				wini++
 				numi++
 			} else if c.winners[wini] < c.numbers[numi] {
@@ -54,7 +48,9 @@ func main() {
 				numi++
 			}
 		}
-		part1 += points
+		if c.matches > 0 {
+			part1 += 1 << (c.matches - 1)
+		}
 	}
 
 	part2 := 0
