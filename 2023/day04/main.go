@@ -8,8 +8,6 @@ import (
 )
 
 type card struct {
-	winners []int
-	numbers []int
 	matches int
 	copies  int
 }
@@ -24,9 +22,17 @@ func main() {
 	for _, line := range lines {
 		_, line, _ = bytes.Cut(line, []byte(": "))
 		winners, numbers, _ := bytes.Cut(line, []byte(" | "))
+		winers := parseNumbers(winners)
+		matches := 0
+		for i := 0; i < len(numbers); i += 3 {
+			num := uint16(numbers[i])<<8 + uint16(numbers[i+1])
+			_, found := slices.BinarySearch(winers, num)
+			if found {
+				matches++
+			}
+		}
 		c := &card{
-			winners: parseNumbers(winners),
-			numbers: parseNumbers(numbers),
+			matches: matches,
 			copies:  1,
 		}
 		cards = append(cards, c)
@@ -36,19 +42,6 @@ func main() {
 
 	part1 := 0
 	for _, c := range cards {
-		wini := 0
-		numi := 0
-		for wini < len(c.winners) && numi < len(c.numbers) {
-			if c.winners[wini] == c.numbers[numi] {
-				c.matches++
-				wini++
-				numi++
-			} else if c.winners[wini] < c.numbers[numi] {
-				wini++
-			} else {
-				numi++
-			}
-		}
 		if c.matches > 0 {
 			part1 += 1 << (c.matches - 1)
 		}
@@ -69,14 +62,11 @@ func main() {
 	util.PrintResults(part1, part2, start, parse, end)
 }
 
-func parseNumbers(bytes []byte) []int {
-	result := make([]int, 0, (len(bytes)+1)/3)
+func parseNumbers(bytes []byte) []uint16 {
+	result := make([]uint16, 0, (len(bytes)+1)/3)
 	for i := 0; i < len(bytes); i += 3 {
-		num := bytes[i : i+2]
-		if num[0] == ' ' {
-			num = num[1:]
-		}
-		result = append(result, util.Btoi(num))
+		num := uint16(bytes[i])<<8 + uint16(bytes[i+1])
+		result = append(result, num)
 	}
 	slices.Sort(result)
 	return result
