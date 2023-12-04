@@ -3,11 +3,12 @@ package main
 import (
 	"advent/util"
 	"bytes"
+	"slices"
 	"time"
 )
 
 type card struct {
-	winners map[int]bool
+	winners []int
 	numbers []int
 	matches int
 	copies  int
@@ -24,7 +25,7 @@ func main() {
 		_, line, _ = bytes.Cut(line, []byte(": "))
 		winners, numbers, _ := bytes.Cut(line, []byte(" | "))
 		c := &card{
-			winners: parseWinners(winners),
+			winners: parseNumbers(winners),
 			numbers: parseNumbers(numbers),
 		}
 		cards = append(cards, c)
@@ -35,14 +36,22 @@ func main() {
 	part1 := 0
 	for _, c := range cards {
 		points := 0
-		for _, num := range c.numbers {
-			if _, ok := c.winners[num]; ok {
+		wini := 0
+		numi := 0
+		for wini < len(c.winners) && numi < len(c.numbers) {
+			if c.winners[wini] == c.numbers[numi] {
 				c.matches++
 				if points == 0 {
 					points = 1
 				} else {
 					points *= 2
 				}
+				wini++
+				numi++
+			} else if c.winners[wini] < c.numbers[numi] {
+				wini++
+			} else {
+				numi++
 			}
 		}
 		part1 += points
@@ -63,20 +72,8 @@ func main() {
 	util.PrintResults(part1, part2, start, parse, end)
 }
 
-func parseWinners(bytes []byte) map[int]bool {
-	result := make(map[int]bool, (len(bytes)+1)/3)
-	for i := 0; i < len(bytes); i += 3 {
-		num := bytes[i : i+2]
-		if num[0] == ' ' {
-			num = num[1:]
-		}
-		result[util.Btoi(num)] = true
-	}
-	return result
-}
-
 func parseNumbers(bytes []byte) []int {
-	result := make([]int, (len(bytes)+1)/3)
+	result := make([]int, 0, (len(bytes)+1)/3)
 	for i := 0; i < len(bytes); i += 3 {
 		num := bytes[i : i+2]
 		if num[0] == ' ' {
@@ -84,6 +81,6 @@ func parseNumbers(bytes []byte) []int {
 		}
 		result = append(result, util.Btoi(num))
 	}
+	slices.Sort(result)
 	return result
-
 }
