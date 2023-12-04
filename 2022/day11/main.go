@@ -114,7 +114,7 @@ func main() {
 				default:
 					log.Panicf("unknown operation %c", m.operation.name)
 				}
-				i = i - mDivisors*(i/mDivisors)
+				i = i % mDivisors
 				if i%m.test == 0 {
 					monkeys[m.throwTrue].items2 = append(monkeys[m.throwTrue].items2, i)
 				} else {
