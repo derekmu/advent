@@ -27,6 +27,7 @@ func main() {
 		c := &card{
 			winners: parseNumbers(winners),
 			numbers: parseNumbers(numbers),
+			copies:  1,
 		}
 		cards = append(cards, c)
 	}
@@ -56,11 +57,11 @@ func main() {
 	part2 := 0
 	for ci, c := range cards {
 		for ci2 := ci + 1; ci2 <= ci+c.matches && ci2 < len(cards); ci2++ {
-			cards[ci2].copies += 1 + c.copies
+			cards[ci2].copies += c.copies
 		}
 	}
 	for _, c := range cards {
-		part2 += 1 + c.copies
+		part2 += c.copies
 	}
 
 	end := time.Now()
