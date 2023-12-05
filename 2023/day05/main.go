@@ -3,7 +3,9 @@ package main
 import (
 	"advent/util"
 	"bytes"
+	"log"
 	"slices"
+	"sort"
 	"time"
 )
 
@@ -18,9 +20,7 @@ type rangeMap struct {
 	length int
 }
 
-type mapper struct {
-	maps []rangeMap
-}
+type mapper []rangeMap
 
 func main() {
 	input := util.ReadInput()
@@ -28,19 +28,27 @@ func main() {
 	start := time.Now()
 
 	lines := util.ParseInputLines(input)
-	lineI := 0
-	line, _ := bytes.CutPrefix(lines[lineI], []byte("seeds: "))
-	var num []byte
+	line, _ := bytes.CutPrefix(lines[0], []byte("seeds: "))
 	seeds := make([]int, 0, 20)
 	for len(line) > 0 {
-		num, line, _ = bytes.Cut(line, []byte(" "))
+		num, line2, _ := bytes.Cut(line, []byte(" "))
 		seeds = append(seeds, util.Btoi(num))
+		line = line2
 	}
-	lineI += 2
+	lines = lines[2:]
 	mappers := make([]mapper, 0, 7)
-	var rm mapper
-	for lineI < len(lines) {
-		rm, lineI = parseMapper(lines, lineI)
+	for len(lines) > 0 {
+		endI := slices.IndexFunc(lines, func(line []byte) bool {
+			return len(line) == 0
+		})
+		mapperLines := lines
+		if endI >= 0 {
+			mapperLines = lines[:endI]
+			lines = lines[endI+1:]
+		} else {
+			lines = lines[:0]
+		}
+		rm := parseMapper(mapperLines)
 		mappers = append(mappers, rm)
 	}
 
@@ -49,18 +57,24 @@ func main() {
 	part1 := -1
 	for _, v := range seeds {
 		for _, m := range mappers {
-			v = translate(v, m)
+			for mi := 0; mi < len(m); mi++ {
+				if m[mi].source <= v && m[mi].source+m[mi].length > v {
+					v = m[mi].dest + (v - m[mi].source)
+					break
+				}
+			}
 		}
 		if part1 == -1 || v < part1 {
 			part1 = v
 		}
 	}
 
+	part1t := time.Now()
+
 	part2 := -1
 	for i := 0; i < len(seeds); i += 2 {
-		rangers := []ranger{
-			{start: seeds[i], length: seeds[i+1]},
-		}
+		rangers := make([]ranger, 0, 100)
+		rangers = append(rangers, ranger{start: seeds[i], length: seeds[i+1]})
 		for _, m := range mappers {
 			newRangers := make([]ranger, 0, 100)
 			for _, r := range rangers {
@@ -80,23 +94,15 @@ func main() {
 	end := time.Now()
 
 	util.PrintResults(part1, part2, start, parse, end)
-}
-
-func translate(v int, m mapper) int {
-	for _, rm := range m.maps {
-		if rm.source <= v && rm.source+rm.length > v {
-			return rm.dest + (v - rm.source)
-		}
-	}
-	return v
+	log.Printf("Timing (part1 / part 2): %v / %v", part1t.Sub(parse), end.Sub(part1t))
 }
 
 func overlap(r ranger, m mapper) []ranger {
-	result := make([]ranger, 0, len(m.maps))
+	result := make([]ranger, 0, len(m))
 	v := r.start
 	mi := 0
-	for v < r.start+r.length && mi < len(m.maps) {
-		rm := m.maps[mi]
+	for v < r.start+r.length && mi < len(m) {
+		rm := m[mi]
 		if rm.source >= r.start+r.length {
 			// range is after the input
 			break
@@ -133,33 +139,21 @@ func overlap(r ranger, m mapper) []ranger {
 	return result
 }
 
-func parseMapper(lines [][]byte, li int) (mapper, int) {
-	m := mapper{
-		maps: make([]rangeMap, 0, 30),
-	}
-	li++
+func parseMapper(lines [][]byte) mapper {
+	lines = lines[1:]
+	m := make(mapper, 0, len(lines))
 	var dest, source, length []byte
-	for li < len(lines) {
-		line := lines[li]
-		li++
-		if len(line) == 0 {
-			return m, li
-		}
+	for _, line := range lines {
 		dest, line, _ = bytes.Cut(line, []byte(" "))
 		source, length, _ = bytes.Cut(line, []byte(" "))
-		m.maps = append(m.maps, rangeMap{
+		m = append(m, rangeMap{
 			dest:   util.Btoi(dest),
 			source: util.Btoi(source),
 			length: util.Btoi(length),
 		})
 	}
-	slices.SortFunc(m.maps, func(a rangeMap, b rangeMap) int {
-		if a.source < b.source {
-			return -1
-		} else if b.source < a.source {
-			return 1
-		}
-		return 0
+	sort.Slice(m, func(a int, b int) bool {
+		return m[a].source < m[b].source
 	})
-	return m, li
+	return m
 }
