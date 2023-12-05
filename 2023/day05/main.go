@@ -3,7 +3,6 @@ package main
 import (
 	"advent/util"
 	"bytes"
-	"log"
 	"slices"
 	"sort"
 	"time"
@@ -69,8 +68,6 @@ func main() {
 		}
 	}
 
-	part1t := time.Now()
-
 	rangers := make([]ranger, 0, 46)
 	newRangers := make([]ranger, 0, 46)
 	part2 := -1
@@ -95,7 +92,6 @@ func main() {
 	end := time.Now()
 
 	util.PrintResults(part1, part2, start, parse, end)
-	log.Printf("Timing (part1 / part 2): %v / %v", part1t.Sub(parse), end.Sub(part1t))
 }
 
 func overlap(r ranger, m mapper, result []ranger) []ranger {
