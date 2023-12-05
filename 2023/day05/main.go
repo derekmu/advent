@@ -19,7 +19,6 @@ type rangeMap struct {
 }
 
 type mapper struct {
-	name string
 	maps []rangeMap
 }
 
@@ -135,9 +134,7 @@ func overlap(r ranger, m mapper) []ranger {
 }
 
 func parseMapper(lines [][]byte, li int) (mapper, int) {
-	name, _ := bytes.CutSuffix(lines[li], []byte(" map:"))
 	m := mapper{
-		name: string(name),
 		maps: make([]rangeMap, 0, 30),
 	}
 	li++
@@ -155,14 +152,14 @@ func parseMapper(lines [][]byte, li int) (mapper, int) {
 			source: util.Btoi(source),
 			length: util.Btoi(length),
 		})
-		slices.SortFunc(m.maps, func(a rangeMap, b rangeMap) int {
-			if a.source < b.source {
-				return -1
-			} else if b.source < a.source {
-				return 1
-			}
-			return 0
-		})
 	}
+	slices.SortFunc(m.maps, func(a rangeMap, b rangeMap) int {
+		if a.source < b.source {
+			return -1
+		} else if b.source < a.source {
+			return 1
+		}
+		return 0
+	})
 	return m, li
 }
