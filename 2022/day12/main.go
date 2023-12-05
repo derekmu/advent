@@ -53,14 +53,14 @@ func main() {
 
 	parse := time.Now()
 
-	target := bfs(lines, sp, ep)
+	target := bfs1(lines, sp, ep)
 	part1 := 0
 	for target.from != nil {
 		part1++
 		target = target.from
 	}
 
-	target = bfsa(lines, ep)
+	target = bfs2(lines, ep)
 	part2 := 0
 	for target.from != nil {
 		part2++
@@ -72,14 +72,13 @@ func main() {
 	util.PrintResults(part1, part2, start, parse, end)
 }
 
-func bfs(lines [][]byte, sp, ep point) *pathNode {
+func bfs(lines [][]byte, ep point, openNodes []*pathNode) *pathNode {
 	rows := len(lines)
 	cols := len(lines[0])
-	origin := &pathNode{point: sp}
-	openNodes := make([]*pathNode, 0, rows*cols)
 	opened := make(map[point]bool, rows*cols)
-	openNodes = append(openNodes, origin)
-	opened[sp] = true
+	for _, n := range openNodes {
+		opened[n.point] = true
+	}
 	for len(openNodes) > 0 {
 		node := openNodes[0]
 		openNodes = openNodes[1:]
@@ -103,40 +102,27 @@ func bfs(lines [][]byte, sp, ep point) *pathNode {
 	return nil
 }
 
-func bfsa(lines [][]byte, ep point) *pathNode {
+func bfs1(lines [][]byte, sp, ep point) *pathNode {
+	rows := len(lines)
+	cols := len(lines[0])
+	origin := &pathNode{point: sp}
+	openNodes := make([]*pathNode, 0, rows*cols)
+	openNodes = append(openNodes, origin)
+	return bfs(lines, ep, openNodes)
+}
+
+func bfs2(lines [][]byte, ep point) *pathNode {
 	rows := len(lines)
 	cols := len(lines[0])
 	openNodes := make([]*pathNode, 0, rows*cols)
-	opened := make(map[point]bool, rows*cols)
 	for row, line := range lines {
 		for col, ch := range line {
 			if ch == 'a' {
 				p := point{row: row, col: col}
 				pn := &pathNode{point: p}
 				openNodes = append(openNodes, pn)
-				opened[p] = true
 			}
 		}
 	}
-	for len(openNodes) > 0 {
-		node := openNodes[0]
-		openNodes = openNodes[1:]
-		for _, dir := range dirs {
-			p := point{node.point.row + dir.row, node.point.col + dir.col}
-			if p.row >= 0 && p.row < rows && p.col >= 0 && p.col < cols {
-				dv := int(lines[p.row][p.col]) - int(lines[node.point.row][node.point.col])
-				if dv <= 1 {
-					if _, ok := opened[p]; !ok {
-						if p == ep {
-							return &pathNode{point: p, from: node}
-						} else {
-							openNodes = append(openNodes, &pathNode{point: p, from: node})
-							opened[p] = true
-						}
-					}
-				}
-			}
-		}
-	}
-	return nil
+	return bfs(lines, ep, openNodes)
 }
