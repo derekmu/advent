@@ -71,24 +71,25 @@ func main() {
 
 	part1t := time.Now()
 
+	rangers := make([]ranger, 0, 46)
+	newRangers := make([]ranger, 0, 46)
 	part2 := -1
 	for i := 0; i < len(seeds); i += 2 {
-		rangers := make([]ranger, 0, 100)
 		rangers = append(rangers, ranger{first: seeds[i], last: seeds[i] + seeds[i+1] - 1})
 		for _, m := range mappers {
-			newRangers := make([]ranger, 0, 100)
-			for _, r := range rangers {
-				for _, r2 := range overlap(r, m) {
-					newRangers = append(newRangers, r2)
-				}
+			for _, r1 := range rangers {
+				newRangers = overlap(r1, m, newRangers)
 			}
-			rangers = newRangers
+			rangers, newRangers = newRangers, rangers
+			newRangers = newRangers[:0]
 		}
 		for _, r := range rangers {
 			if part2 == -1 || r.first < part2 {
 				part2 = r.first
 			}
 		}
+		rangers = rangers[:0]
+		newRangers = newRangers[:0]
 	}
 
 	end := time.Now()
@@ -97,10 +98,11 @@ func main() {
 	log.Printf("Timing (part1 / part 2): %v / %v", part1t.Sub(parse), end.Sub(part1t))
 }
 
-func overlap(r ranger, m mapper) []ranger {
-	result := make([]ranger, 0, len(m))
+func overlap(r ranger, m mapper, result []ranger) []ranger {
 	v := r.first
-	mi := 0
+	mi := sort.Search(len(m), func(mi int) bool {
+		return v <= m[mi].sourceLast
+	})
 	for v <= r.last && mi < len(m) {
 		if m[mi].sourceFirst > r.last {
 			// range is after the input
