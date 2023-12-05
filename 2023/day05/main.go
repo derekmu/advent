@@ -10,14 +10,14 @@ import (
 )
 
 type ranger struct {
-	start  int
-	length int
+	first int
+	last  int
 }
 
 type rangeMap struct {
-	dest   int
-	source int
-	length int
+	destFirst   int
+	sourceFirst int
+	sourceLast  int
 }
 
 type mapper []rangeMap
@@ -57,11 +57,11 @@ func main() {
 	part1 := -1
 	for _, v := range seeds {
 		for _, m := range mappers {
-			for mi := 0; mi < len(m); mi++ {
-				if m[mi].source <= v && m[mi].source+m[mi].length > v {
-					v = m[mi].dest + (v - m[mi].source)
-					break
-				}
+			mi := sort.Search(len(m), func(mi int) bool {
+				return v <= m[mi].sourceLast
+			})
+			if mi < len(m) && v >= m[mi].sourceFirst {
+				v = m[mi].destFirst + (v - m[mi].sourceFirst)
 			}
 		}
 		if part1 == -1 || v < part1 {
@@ -74,7 +74,7 @@ func main() {
 	part2 := -1
 	for i := 0; i < len(seeds); i += 2 {
 		rangers := make([]ranger, 0, 100)
-		rangers = append(rangers, ranger{start: seeds[i], length: seeds[i+1]})
+		rangers = append(rangers, ranger{first: seeds[i], last: seeds[i] + seeds[i+1] - 1})
 		for _, m := range mappers {
 			newRangers := make([]ranger, 0, 100)
 			for _, r := range rangers {
@@ -85,8 +85,8 @@ func main() {
 			rangers = newRangers
 		}
 		for _, r := range rangers {
-			if part2 == -1 || r.start < part2 {
-				part2 = r.start
+			if part2 == -1 || r.first < part2 {
+				part2 = r.first
 			}
 		}
 	}
@@ -99,41 +99,40 @@ func main() {
 
 func overlap(r ranger, m mapper) []ranger {
 	result := make([]ranger, 0, len(m))
-	v := r.start
+	v := r.first
 	mi := 0
-	for v < r.start+r.length && mi < len(m) {
-		rm := m[mi]
-		if rm.source >= r.start+r.length {
+	for v <= r.last && mi < len(m) {
+		if m[mi].sourceFirst > r.last {
 			// range is after the input
 			break
 		}
-		if v >= rm.source+rm.length {
+		if v > m[mi].sourceLast {
 			// range is before the input
 			mi++
 			continue
 		}
-		if v < rm.source {
+		if v < m[mi].sourceFirst {
 			// unmapped values, map to same
 			result = append(result, ranger{
-				start:  v,
-				length: rm.source - v,
+				first: v,
+				last:  m[mi].sourceFirst - 1,
 			})
-			v = rm.source
+			v = m[mi].sourceFirst
 		}
-		end := min(r.start+r.length, rm.source+rm.length)
+		last := min(r.last, m[mi].sourceLast)
 		// overlap, map to destination
 		result = append(result, ranger{
-			start:  rm.dest + (v - rm.source),
-			length: end - v,
+			first: m[mi].destFirst + v - m[mi].sourceFirst,
+			last:  m[mi].destFirst + last - m[mi].sourceFirst,
 		})
-		v = end
+		v = last + 1
 		mi++
 	}
-	if v < r.start+r.length {
+	if v <= r.last {
 		// no more ranges to consider for overlaps, map to same
 		result = append(result, ranger{
-			start:  v,
-			length: r.start + r.length - v,
+			first: v,
+			last:  r.last,
 		})
 	}
 	return result
@@ -146,14 +145,15 @@ func parseMapper(lines [][]byte) mapper {
 	for _, line := range lines {
 		dest, line, _ = bytes.Cut(line, []byte(" "))
 		source, length, _ = bytes.Cut(line, []byte(" "))
+		sourceFirst := util.Btoi(source)
 		m = append(m, rangeMap{
-			dest:   util.Btoi(dest),
-			source: util.Btoi(source),
-			length: util.Btoi(length),
+			destFirst:   util.Btoi(dest),
+			sourceFirst: sourceFirst,
+			sourceLast:  sourceFirst + util.Btoi(length) - 1,
 		})
 	}
 	sort.Slice(m, func(a int, b int) bool {
-		return m[a].source < m[b].source
+		return m[a].sourceFirst < m[b].sourceFirst
 	})
 	return m
 }
