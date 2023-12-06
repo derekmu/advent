@@ -32,16 +32,10 @@ func main() {
 }
 
 func raceWins(time, dist int) int {
-	hold := sort.Search(time, func(hold int) bool {
+	hold := sort.Search(time/2, func(hold int) bool {
 		boat := (time - hold) * hold
 		return boat > dist
 	})
-	for ; hold < time; hold++ {
-		boat := (time - hold) * hold
-		if boat > dist {
-			break
-		}
-	}
 	return time - hold - hold + 1
 }
 
