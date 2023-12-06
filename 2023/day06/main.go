@@ -3,7 +3,7 @@ package main
 import (
 	"advent/util"
 	"bytes"
-	"sort"
+	"math"
 	"time"
 )
 
@@ -32,10 +32,18 @@ func main() {
 }
 
 func raceWins(time, dist int) int {
-	hold := sort.Search(time/2, func(hold int) bool {
-		boat := (time - hold) * hold
-		return boat > dist
-	})
+	// formula for the time taken to finish:
+	//	(t-h)*h
+	//	-h^2 + th
+	// where we match the record:
+	//	d = -h^2 + th
+	// 	0 = -h^2 + th - d
+	// apply the quadratic equation:
+	// 	h = (-b +- sqrt(b^2 - 4ac)) / 2a
+	//  a = -1
+	//  b = t
+	//  c = -d
+	hold := int(math.Ceil((float64(-time) + math.Sqrt(float64(time*time-4*dist))) / -2))
 	return time - hold - hold + 1
 }
 
