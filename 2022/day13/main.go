@@ -2,6 +2,7 @@ package main
 
 import (
 	"advent/util"
+	"slices"
 	"time"
 )
 
@@ -18,8 +19,16 @@ func main() {
 
 	lines := util.ParseInputLines(input)
 	nodePairs := make([][2]*node, 0, (len(lines)+1)/3)
+	nodes := make([]*node, 0, (len(lines)+1)/3*2+2)
+	divider1 := parseNode([]byte("[[2]]"))
+	divider2 := parseNode([]byte("[[6]]"))
+	nodes = append(nodes, divider1)
+	nodes = append(nodes, divider2)
 	for i := 0; i < len(lines); i += 3 {
-		nodePairs = append(nodePairs, [2]*node{parseNode(lines[i]), parseNode(lines[i+1])})
+		node1 := parseNode(lines[i])
+		node2 := parseNode(lines[i+1])
+		nodePairs = append(nodePairs, [2]*node{node1, node2})
+		nodes = append(nodes, node1, node2)
 	}
 
 	parse := time.Now()
@@ -30,7 +39,10 @@ func main() {
 			part1 += i + 1
 		}
 	}
-	part2 := -1
+	slices.SortFunc(nodes, compare)
+	i1 := slices.Index(nodes, divider1)
+	i2 := slices.Index(nodes, divider2)
+	part2 := (i1 + 1) * (i2 + 1)
 
 	end := time.Now()
 
