@@ -3,6 +3,7 @@ package main
 import (
 	"advent/util"
 	"bytes"
+	"sort"
 	"time"
 )
 
@@ -30,15 +31,18 @@ func main() {
 	util.PrintResults(part1, part2, start, parse, end)
 }
 
-func raceWins(t, d int) int {
-	wins := 0
-	for h := 1; h < t; h++ {
-		b := (t - h) * h
-		if b > d {
-			wins++
+func raceWins(time, dist int) int {
+	hold := sort.Search(time, func(hold int) bool {
+		boat := (time - hold) * hold
+		return boat > dist
+	})
+	for ; hold < time; hold++ {
+		boat := (time - hold) * hold
+		if boat > dist {
+			break
 		}
 	}
-	return wins
+	return time - hold - hold + 1
 }
 
 func parseNums(line []byte) ([]int, int) {
