@@ -1,30 +1,22 @@
-package main
+package day03
 
 import (
-	"bufio"
+	"advent/util"
 	"log"
-	"os"
 )
 
-func main() {
-	file, err := os.Open("input.txt")
-	if err != nil {
-		log.Panic(err)
-	}
-	defer file.Close()
-
+func Run(input []byte) error {
 	sumPriorities1 := 0
 	sumPriorities2 := 0
-	lines := [3]string{}
+	lines2 := [3][]byte{}
 	linesI := 0
 
-	scanner := bufio.NewScanner(file)
-	for scanner.Scan() {
-		line := scanner.Text()
+	lines := util.ParseInputLines(input)
+	for _, line := range lines {
 		// problem 1
 		sackOne := line[:len(line)/2]
 		sackTwo := line[len(line)/2:]
-		sackOneMap := map[int32]bool{}
+		sackOneMap := map[byte]bool{}
 		for _, c := range sackOne {
 			sackOneMap[c] = true
 		}
@@ -36,19 +28,19 @@ func main() {
 		}
 
 		// problem 2
-		lines[linesI] = line
+		lines2[linesI] = line
 		linesI += 1
 		if linesI == 3 {
-			matchMap := map[int32]int{}
-			for _, c := range lines[0] {
+			matchMap := map[byte]int{}
+			for _, c := range lines2[0] {
 				matchMap[c] = 1
 			}
-			for _, c := range lines[1] {
+			for _, c := range lines2[1] {
 				if _, ok := matchMap[c]; ok {
 					matchMap[c] = 2
 				}
 			}
-			for _, c := range lines[2] {
+			for _, c := range lines2[2] {
 				if v, ok := matchMap[c]; ok && v == 2 {
 					sumPriorities2 += priorityScore(c)
 					break
@@ -60,9 +52,11 @@ func main() {
 
 	log.Printf("The sum of the priorities of misstored items is %d.", sumPriorities1)
 	log.Printf("The sum of the priorities of badges is %d.", sumPriorities2)
+
+	return nil
 }
 
-func priorityScore(c int32) int {
+func priorityScore(c byte) int {
 	if c >= 'A' && c <= 'Z' {
 		return int(c - 'A' + 27)
 	} else if c >= 'a' && c <= 'z' {

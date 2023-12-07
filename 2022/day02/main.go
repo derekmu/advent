@@ -1,9 +1,10 @@
-package main
+package day02
 
 import (
 	"bufio"
+	"bytes"
+	"errors"
 	"log"
-	"os"
 )
 
 var (
@@ -32,22 +33,16 @@ var (
 	}
 )
 
-func main() {
-	file, err := os.Open("input.txt")
-	if err != nil {
-		log.Panic(err)
-	}
-	defer file.Close()
-
+func Run(input []byte) error {
 	totalScore1 := 0
 	totalScore2 := 0
 
-	scanner := bufio.NewScanner(file)
+	scanner := bufio.NewScanner(bytes.NewReader(input))
 	scanner.Split(bufio.ScanWords)
 	for scanner.Scan() {
 		theirChoice := choiceMap[scanner.Text()]
 		if !scanner.Scan() {
-			log.Panic("missing second token!")
+			return errors.New("missing second token")
 		}
 		me := scanner.Text()
 		myChoice := choiceMap[me]
@@ -76,4 +71,6 @@ func main() {
 
 	log.Printf("The total score for part 1 would be %d.", totalScore1)
 	log.Printf("The total score for part 2 would be %d.", totalScore2)
+
+	return nil
 }
