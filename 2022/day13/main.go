@@ -1,4 +1,4 @@
-package main
+package day13
 
 import (
 	"advent/util"
@@ -12,9 +12,7 @@ type node struct {
 	parent *node
 }
 
-func main() {
-	input := util.ReadInput()
-
+func Run(input []byte) error {
 	start := time.Now()
 
 	lines := util.ParseInputLines(input)
@@ -47,6 +45,8 @@ func main() {
 	end := time.Now()
 
 	util.PrintResults(part1, part2, start, parse, end)
+
+	return nil
 }
 
 func compare(ln *node, rn *node) int {

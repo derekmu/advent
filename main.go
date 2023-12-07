@@ -8,6 +8,12 @@ import (
 	day2205 "advent/2022/day05"
 	day2206 "advent/2022/day06"
 	day2207 "advent/2022/day07"
+	day2208 "advent/2022/day08"
+	day2209 "advent/2022/day09"
+	day2210 "advent/2022/day10"
+	day2211 "advent/2022/day11"
+	day2212 "advent/2022/day12"
+	day2213 "advent/2022/day13"
 	day2301 "advent/2023/day01"
 	day2302 "advent/2023/day02"
 	day2303 "advent/2023/day03"
@@ -37,6 +43,12 @@ var problems = []problem{
 	{year: "2022", day: "5", runner: day2205.Run},
 	{year: "2022", day: "6", runner: day2206.Run},
 	{year: "2022", day: "7", runner: day2207.Run},
+	{year: "2022", day: "8", runner: day2208.Run},
+	{year: "2022", day: "9", runner: day2209.Run},
+	{year: "2022", day: "10", runner: day2210.Run},
+	{year: "2022", day: "11", runner: day2211.Run},
+	{year: "2022", day: "12", runner: day2212.Run},
+	{year: "2022", day: "13", runner: day2213.Run},
 	// 2023
 	{year: "2023", day: "1", runner: day2301.Run},
 	{year: "2023", day: "2", runner: day2302.Run},

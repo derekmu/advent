@@ -1,4 +1,4 @@
-package main
+package day12
 
 import (
 	"advent/util"
@@ -23,9 +23,7 @@ type pathNode struct {
 	from  *pathNode
 }
 
-func main() {
-	input := util.ReadInput()
-
+func Run(input []byte) error {
 	start := time.Now()
 
 	lines := util.ParseInputLines(input)
@@ -70,6 +68,8 @@ func main() {
 	end := time.Now()
 
 	util.PrintResults(part1, part2, start, parse, end)
+
+	return nil
 }
 
 func bfs(lines [][]byte, ep point, openNodes []*pathNode) *pathNode {

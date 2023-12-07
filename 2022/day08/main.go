@@ -1,25 +1,15 @@
-package main
+package day08
 
 import (
-	"bufio"
+	"advent/util"
 	"log"
-	"os"
 )
 
-func main() {
-	f, err := os.Open("input.txt")
-	if err != nil {
-		log.Panic(err)
-	}
-	defer f.Close()
-	scanner := bufio.NewScanner(f)
-
-	var trees []string
+func Run(input []byte) error {
 	var viz [][]bool
 
-	for scanner.Scan() {
-		line := scanner.Text()
-		trees = append(trees, line)
+	trees := util.ParseInputLines(input)
+	for _, line := range trees {
 		vizRow := make([]bool, len(line))
 		viz = append(viz, vizRow)
 		maxHeight := uint8('0' - 1)
@@ -100,4 +90,6 @@ func main() {
 
 	log.Printf("The number of visible trees from outside the grid is %d", visibleTrees)
 	log.Printf("The maximum scenic score possible is %d", maxScenicScore)
+
+	return nil
 }

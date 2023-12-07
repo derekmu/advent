@@ -1,4 +1,4 @@
-package main
+package day09
 
 import (
 	"advent/util"
@@ -33,9 +33,7 @@ func (p *point) update(f *point) bool {
 	return false
 }
 
-func main() {
-	input := util.ReadInput()
-
+func Run(input []byte) error {
 	start := time.Now()
 
 	lines := util.ParseInputLines(input)
@@ -88,6 +86,8 @@ func main() {
 	part2 = len(visited)
 
 	util.PrintResults(part1, part2, start, parse, end)
+
+	return nil
 }
 
 func abs(x int) int {

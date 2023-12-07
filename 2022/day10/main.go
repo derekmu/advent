@@ -1,4 +1,4 @@
-package main
+package day10
 
 import (
 	"advent/util"
@@ -12,9 +12,7 @@ type op struct {
 	value int
 }
 
-func main() {
-	input := util.ReadInput()
-
+func Run(input []byte) error {
 	start := time.Now()
 
 	lines := util.ParseInputLines(input)
@@ -32,8 +30,6 @@ func main() {
 	}
 
 	parse := time.Now()
-
-	end := time.Now()
 
 	part1 := 0
 	part2 := -1
@@ -73,5 +69,9 @@ func main() {
 		println()
 	}
 
+	end := time.Now()
+
 	util.PrintResults(part1, part2, start, parse, end)
+
+	return nil
 }
