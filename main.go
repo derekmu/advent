@@ -8,6 +8,7 @@ import (
 	"advent/2022/day05"
 	"advent/2022/day06"
 	"advent/2022/day07"
+	day072 "advent/2023/day07"
 	"advent/util"
 	"context"
 	"github.com/urfave/cli/v3"
@@ -22,6 +23,7 @@ type problem struct {
 }
 
 var problems = []problem{
+	// 2022
 	{year: "2022", day: "1", runner: day01.Run},
 	{year: "2022", day: "2", runner: day02.Run},
 	{year: "2022", day: "3", runner: day03.Run},
@@ -29,6 +31,8 @@ var problems = []problem{
 	{year: "2022", day: "5", runner: day05.Run},
 	{year: "2022", day: "6", runner: day06.Run},
 	{year: "2022", day: "7", runner: day07.Run},
+	// 2023
+	{year: "2023", day: "7", runner: day072.Run},
 }
 
 func main() {
