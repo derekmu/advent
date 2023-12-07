@@ -1,4 +1,4 @@
-package main
+package day05
 
 import (
 	"advent/util"
@@ -21,9 +21,7 @@ type rangeMap struct {
 
 type mapper []rangeMap
 
-func main() {
-	input := util.ReadInput()
-
+func Run(input []byte) error {
 	start := time.Now()
 
 	lines := util.ParseInputLines(input)
@@ -92,6 +90,8 @@ func main() {
 	end := time.Now()
 
 	util.PrintResults(part1, part2, start, parse, end)
+
+	return nil
 }
 
 func overlap(r ranger, m mapper, result []ranger) []ranger {

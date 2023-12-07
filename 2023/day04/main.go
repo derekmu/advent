@@ -1,4 +1,4 @@
-package main
+package day04
 
 import (
 	"advent/util"
@@ -12,9 +12,7 @@ type card struct {
 	copies  int
 }
 
-func main() {
-	input := util.ReadInput()
-
+func Run(input []byte) error {
 	start := time.Now()
 
 	lines := util.ParseInputLines(input)
@@ -60,6 +58,8 @@ func main() {
 	end := time.Now()
 
 	util.PrintResults(part1, part2, start, parse, end)
+
+	return nil
 }
 
 func parseNumbers(bytes []byte) []uint16 {

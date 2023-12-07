@@ -1,9 +1,10 @@
-package main
+package day02
 
 import (
 	"advent/util"
 	"bytes"
-	"log"
+	"errors"
+	"fmt"
 	"time"
 )
 
@@ -18,9 +19,7 @@ type game struct {
 	sets   []*set
 }
 
-func main() {
-	input := util.ReadInput()
-
+func Run(input []byte) error {
 	start := time.Now()
 
 	lines := util.ParseInputLines(input)
@@ -51,7 +50,7 @@ func main() {
 				} else if bytes.Equal(color, []byte("blue")) {
 					s.blueCount = count
 				} else {
-					log.Panicf("Unknown color %s", color)
+					return errors.New(fmt.Sprintf("Unknown color %s", color))
 				}
 			}
 		}
@@ -87,4 +86,6 @@ func main() {
 	end := time.Now()
 
 	util.PrintResults(part1, part2, start, parse, end)
+
+	return nil
 }

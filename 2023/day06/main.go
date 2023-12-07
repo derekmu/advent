@@ -1,4 +1,4 @@
-package main
+package day06
 
 import (
 	"advent/util"
@@ -7,9 +7,7 @@ import (
 	"time"
 )
 
-func main() {
-	input := util.ReadInput()
-
+func Run(input []byte) error {
 	start := time.Now()
 
 	lines := util.ParseInputLines(input)
@@ -29,6 +27,8 @@ func main() {
 	end := time.Now()
 
 	util.PrintResults(part1, part2, start, parse, end)
+
+	return nil
 }
 
 func raceWins(time, dist int) int {

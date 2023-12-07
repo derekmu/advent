@@ -1,4 +1,4 @@
-package main
+package day01
 
 import (
 	"advent/util"
@@ -18,9 +18,7 @@ var words = [][]byte{
 	[]byte("nine"),
 }
 
-func main() {
-	input := util.ReadInput()
-
+func Run(input []byte) error {
 	start := time.Now()
 
 	lines := util.ParseInputLines(input)
@@ -37,6 +35,8 @@ func main() {
 	end := time.Now()
 
 	util.PrintResults(part1, part2, start, parse, end)
+
+	return nil
 }
 
 func calibrationValue1(line []byte) int {
