@@ -1,11 +1,11 @@
-package main
+package day07
 
 import (
-	"bufio"
+	"advent/util"
+	"bytes"
+	"errors"
+	"fmt"
 	"log"
-	"os"
-	"strconv"
-	"strings"
 )
 
 type file struct {
@@ -84,14 +84,7 @@ func (d *directory) getSmallestDirToDelete(minSize, haveSize int) int {
 	return haveSize
 }
 
-func main() {
-	f, err := os.Open("input.txt")
-	if err != nil {
-		log.Panic(err)
-	}
-	defer f.Close()
-	scanner := bufio.NewScanner(f)
-
+func Run(input []byte) error {
 	root := &directory{
 		name:     "/",
 		children: map[string]*directory{},
@@ -100,41 +93,38 @@ func main() {
 	cd := root
 	lsing := false
 
-	for scanner.Scan() {
-		line := scanner.Text()
+	lines := util.ParseInputLines(input)
+	for _, line := range lines {
 		if line[0] == '$' {
 			lsing = false
-			switch line[2:4] {
-			case "cd":
+			command := line[2:4]
+			if bytes.Equal(command, []byte("cd")) {
 				dirName := line[5:]
-				switch dirName {
-				case "..":
+				if bytes.Equal(dirName, []byte("..")) {
 					cd = cd.parent
-				case "/":
+				} else if bytes.Equal(dirName, []byte("/")) {
 					cd = root
-				default:
-					cd = cd.getChild(dirName)
+				} else {
+					cd = cd.getChild(string(dirName))
 				}
-			case "ls":
+			} else if bytes.Equal(command, []byte("ls")) {
 				lsing = true
-			default:
-				log.Panicf("unrecognized command: %s", line[2:4])
+			} else {
+				return errors.New(fmt.Sprintf("unrecognized command: %s", line[2:4]))
 			}
 		} else if lsing {
-			if line[0:3] == "dir" {
-				dirName := line[4:]
+			if bytes.Equal(line[0:3], []byte("dir")) {
+				dirName := string(line[4:])
 				cd.getChild(dirName)
 			} else {
-				parts := strings.Split(line, " ")
-				size, err := strconv.Atoi(parts[0])
-				if err != nil {
-					log.Panic(err)
-				}
-				fileName := parts[1]
+				parts := bytes.Split(line, []byte(" "))
+				size := util.Btoi(parts[0])
+				fileName := string(parts[1])
 				cd.getFile(fileName, size)
 			}
 		} else {
-			log.Panicf("unrecognized line: %s", line)
+
+			return errors.New(fmt.Sprintf("unrecognized line: %s", line))
 		}
 	}
 
@@ -148,4 +138,6 @@ func main() {
 
 	log.Printf("The sum of the sizes of directories at most 100,000 size is %d", part1)
 	log.Printf("The size of the smallest directory that could be deleted to create space is %d", part2)
+
+	return nil
 }

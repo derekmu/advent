@@ -1,21 +1,13 @@
-package main
+package day06
 
 import (
-	"bufio"
+	"advent/util"
 	"log"
-	"os"
 )
 
-func main() {
-	file, err := os.Open("input.txt")
-	if err != nil {
-		log.Panic(err)
-	}
-	defer file.Close()
-	scanner := bufio.NewScanner(file)
-
-	for scanner.Scan() {
-		line := scanner.Text()
+func Run(input []byte) error {
+	lines := util.ParseInputLines(input)
+	for _, line := range lines {
 		chars4 := map[uint8]int{}
 		fin4 := false
 		chars14 := map[uint8]int{}
@@ -29,9 +21,10 @@ func main() {
 			}
 		}
 	}
+	return nil
 }
 
-func updateCharCountMap(charCountMap1 map[uint8]int, size int, line string, i int) bool {
+func updateCharCountMap(charCountMap1 map[uint8]int, size int, line []byte, i int) bool {
 	c := line[i]
 	v, _ := charCountMap1[c]
 	charCountMap1[c] = v + 1
