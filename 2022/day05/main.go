@@ -1,28 +1,21 @@
-package main
+package day05
 
 import (
-	"bufio"
+	"advent/util"
+	"bytes"
 	"log"
-	"os"
-	"strconv"
-	"strings"
 )
 
-func main() {
-	file, err := os.Open("input.txt")
-	if err != nil {
-		log.Panic(err)
-	}
-	defer file.Close()
-	scanner := bufio.NewScanner(file)
+func Run(input []byte) error {
+	lines := util.ParseInputLines(input)
+	lineI := 0
 
 	// read stacks
 	var stacks1 [][]uint8
-	var lastLine string
-	for scanner.Scan() {
-		line := scanner.Text()
-		if line == "" {
-			// blank line
+	var lastLine []byte
+	for ; lineI < len(lines); lineI++ {
+		line := lines[lineI]
+		if len(line) == 0 {
 			break
 		}
 		for stackIndex := 0; stackIndex < (len(lastLine)+1)/4; stackIndex++ {
@@ -46,23 +39,16 @@ func main() {
 		copy(stacks2[si], stack)
 	}
 
+	lineI++
+
 	// do moves
-	for scanner.Scan() {
-		line := scanner.Text()
-		parts := strings.Split(line, " ")
-		moves, err := strconv.Atoi(parts[1])
-		if err != nil {
-			log.Panic(err)
-		}
-		fromIndex, err := strconv.Atoi(parts[3])
-		if err != nil {
-			log.Panic(err)
-		}
+	for ; lineI < len(lines); lineI++ {
+		line := lines[lineI]
+		parts := bytes.Split(line, []byte(" "))
+		moves := util.Btoi(parts[1])
+		fromIndex := util.Btoi(parts[3])
 		fromIndex--
-		toIndex, err := strconv.Atoi(parts[5])
-		if err != nil {
-			log.Panic(err)
-		}
+		toIndex := util.Btoi(parts[5])
 		toIndex--
 		for n := 0; n < moves; n++ {
 			stacks1[toIndex] = append(stacks1[toIndex], stacks1[fromIndex][len(stacks1[fromIndex])-1-n])
@@ -82,4 +68,6 @@ func main() {
 
 	log.Printf("The crates at the top of each stack for part 1 are %s", result1)
 	log.Printf("The crates at the top of each stack for part 2 are %s", result2)
+
+	return nil
 }

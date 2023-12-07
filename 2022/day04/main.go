@@ -1,27 +1,18 @@
-package main
+package day04
 
 import (
-	"bufio"
+	"advent/util"
+	"bytes"
 	"log"
-	"os"
-	"strconv"
-	"strings"
 )
 
-func main() {
-	file, err := os.Open("input.txt")
-	if err != nil {
-		log.Panic(err)
-	}
-	defer file.Close()
-
+func Run(input []byte) error {
 	containedCount := 0
 	overlapCount := 0
 
-	scanner := bufio.NewScanner(file)
-	for scanner.Scan() {
-		line := scanner.Text()
-		parts := strings.Split(line, ",")
+	lines := util.ParseInputLines(input)
+	for _, line := range lines {
+		parts := bytes.Split(line, []byte(","))
 		nums1 := parseNums(parts[0])
 		nums2 := parseNums(parts[1])
 		if nums1[0] <= nums2[0] && nums1[1] >= nums2[1] {
@@ -33,19 +24,18 @@ func main() {
 			overlapCount++
 		}
 	}
+
 	log.Printf("The number of pairs with a range fully containing the other is %d.", containedCount)
 	log.Printf("The number of pairs with an overlap is %d.", overlapCount)
+
+	return nil
 }
 
-func parseNums(s string) [2]int {
-	parts := strings.Split(s, "-")
+func parseNums(s []byte) [2]int {
+	parts := bytes.Split(s, []byte("-"))
 	nums := [2]int{}
 	for i := 0; i < len(nums); i++ {
-		v, err := strconv.Atoi(parts[i])
-		if err != nil {
-			log.Panic(err)
-		}
-		nums[i] = v
+		nums[i] = util.Btoi(parts[i])
 	}
 	return nums
 }
