@@ -3,8 +3,12 @@ package day04
 import (
 	"advent/util"
 	"bytes"
+	_ "embed"
 	"log"
 )
+
+//go:embed input.txt
+var Input []byte
 
 func Run(input []byte) error {
 	containedCount := 0

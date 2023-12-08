@@ -3,6 +3,7 @@ package day07
 import (
 	"advent/util"
 	"bytes"
+	_ "embed"
 	"errors"
 	"fmt"
 	"log"
@@ -83,6 +84,9 @@ func (d *directory) getSmallestDirToDelete(minSize, haveSize int) int {
 	}
 	return haveSize
 }
+
+//go:embed input.txt
+var Input []byte
 
 func Run(input []byte) error {
 	root := &directory{

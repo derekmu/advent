@@ -3,6 +3,7 @@ package day11
 import (
 	"advent/util"
 	"bytes"
+	_ "embed"
 	"log"
 	"time"
 )
@@ -22,6 +23,9 @@ type monkey struct {
 	inspections1 int
 	inspections2 int
 }
+
+//go:embed input.txt
+var Input []byte
 
 func Run(input []byte) error {
 	start := time.Now()

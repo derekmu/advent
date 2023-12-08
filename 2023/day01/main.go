@@ -3,6 +3,7 @@ package day01
 import (
 	"advent/util"
 	"bytes"
+	_ "embed"
 	"time"
 )
 
@@ -17,6 +18,9 @@ var words = [][]byte{
 	[]byte("eight"),
 	[]byte("nine"),
 }
+
+//go:embed input.txt
+var Input []byte
 
 func Run(input []byte) error {
 	start := time.Now()

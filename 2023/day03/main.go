@@ -2,6 +2,7 @@ package day03
 
 import (
 	"advent/util"
+	_ "embed"
 	"time"
 )
 
@@ -16,6 +17,9 @@ type index struct {
 	row int
 	col int
 }
+
+//go:embed input.txt
+var Input []byte
 
 func Run(input []byte) error {
 	start := time.Now()

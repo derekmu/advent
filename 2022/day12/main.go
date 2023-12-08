@@ -3,6 +3,7 @@ package day12
 import (
 	"advent/util"
 	"bytes"
+	_ "embed"
 	"time"
 )
 
@@ -22,6 +23,9 @@ type pathNode struct {
 	point point
 	from  *pathNode
 }
+
+//go:embed input.txt
+var Input []byte
 
 func Run(input []byte) error {
 	start := time.Now()

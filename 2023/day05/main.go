@@ -3,6 +3,7 @@ package day05
 import (
 	"advent/util"
 	"bytes"
+	_ "embed"
 	"slices"
 	"sort"
 	"time"
@@ -20,6 +21,9 @@ type rangeMap struct {
 }
 
 type mapper []rangeMap
+
+//go:embed input.txt
+var Input []byte
 
 func Run(input []byte) error {
 	start := time.Now()

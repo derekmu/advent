@@ -3,6 +3,7 @@ package day04
 import (
 	"advent/util"
 	"bytes"
+	_ "embed"
 	"slices"
 	"time"
 )
@@ -11,6 +12,9 @@ type card struct {
 	matches int
 	copies  int
 }
+
+//go:embed input.txt
+var Input []byte
 
 func Run(input []byte) error {
 	start := time.Now()

@@ -4,6 +4,7 @@ import (
 	"advent/util"
 	"bytes"
 	"cmp"
+	_ "embed"
 	"slices"
 	"time"
 )
@@ -40,6 +41,9 @@ const (
 	onePair   = 5
 	bupkis    = 4
 )
+
+//go:embed input.txt
+var Input []byte
 
 func Run(input []byte) error {
 	start := time.Now()

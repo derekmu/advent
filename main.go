@@ -21,7 +21,6 @@ import (
 	day2305 "advent/2023/day05"
 	day2306 "advent/2023/day06"
 	day2307 "advent/2023/day07"
-	"advent/util"
 	"context"
 	"github.com/urfave/cli/v3"
 	"log"
@@ -32,31 +31,32 @@ type problem struct {
 	year   string
 	day    string
 	runner func([]byte) error
+	input  []byte
 }
 
 var problems = []problem{
 	// 2022
-	{year: "2022", day: "1", runner: day2201.Run},
-	{year: "2022", day: "2", runner: day2202.Run},
-	{year: "2022", day: "3", runner: day2203.Run},
-	{year: "2022", day: "4", runner: day2204.Run},
-	{year: "2022", day: "5", runner: day2205.Run},
-	{year: "2022", day: "6", runner: day2206.Run},
-	{year: "2022", day: "7", runner: day2207.Run},
-	{year: "2022", day: "8", runner: day2208.Run},
-	{year: "2022", day: "9", runner: day2209.Run},
-	{year: "2022", day: "10", runner: day2210.Run},
-	{year: "2022", day: "11", runner: day2211.Run},
-	{year: "2022", day: "12", runner: day2212.Run},
-	{year: "2022", day: "13", runner: day2213.Run},
+	{year: "2022", day: "1", runner: day2201.Run, input: day2201.Input},
+	{year: "2022", day: "2", runner: day2202.Run, input: day2202.Input},
+	{year: "2022", day: "3", runner: day2203.Run, input: day2203.Input},
+	{year: "2022", day: "4", runner: day2204.Run, input: day2204.Input},
+	{year: "2022", day: "5", runner: day2205.Run, input: day2205.Input},
+	{year: "2022", day: "6", runner: day2206.Run, input: day2206.Input},
+	{year: "2022", day: "7", runner: day2207.Run, input: day2207.Input},
+	{year: "2022", day: "8", runner: day2208.Run, input: day2208.Input},
+	{year: "2022", day: "9", runner: day2209.Run, input: day2209.Input},
+	{year: "2022", day: "10", runner: day2210.Run, input: day2210.Input},
+	{year: "2022", day: "11", runner: day2211.Run, input: day2211.Input},
+	{year: "2022", day: "12", runner: day2212.Run, input: day2212.Input},
+	{year: "2022", day: "13", runner: day2213.Run, input: day2213.Input},
 	// 2023
-	{year: "2023", day: "1", runner: day2301.Run},
-	{year: "2023", day: "2", runner: day2302.Run},
-	{year: "2023", day: "3", runner: day2303.Run},
-	{year: "2023", day: "4", runner: day2304.Run},
-	{year: "2023", day: "5", runner: day2305.Run},
-	{year: "2023", day: "6", runner: day2306.Run},
-	{year: "2023", day: "7", runner: day2307.Run},
+	{year: "2023", day: "1", runner: day2301.Run, input: day2301.Input},
+	{year: "2023", day: "2", runner: day2302.Run, input: day2302.Input},
+	{year: "2023", day: "3", runner: day2303.Run, input: day2303.Input},
+	{year: "2023", day: "4", runner: day2304.Run, input: day2304.Input},
+	{year: "2023", day: "5", runner: day2305.Run, input: day2305.Input},
+	{year: "2023", day: "6", runner: day2306.Run, input: day2306.Input},
+	{year: "2023", day: "7", runner: day2307.Run, input: day2307.Input},
 }
 
 func main() {
@@ -73,14 +73,7 @@ func main() {
 		yearCommand.Commands = append(yearCommand.Commands, &cli.Command{
 			Name: p.day,
 			Action: func(ctx context.Context, cmd *cli.Command) error {
-				var day string
-				if len(p.day) == 1 {
-					day = "day0" + p.day
-				} else {
-					day = "day" + p.day
-				}
-				input := util.ReadDayInput(p.year, day)
-				return p.runner(input)
+				return p.runner(p.input)
 			},
 		})
 	}

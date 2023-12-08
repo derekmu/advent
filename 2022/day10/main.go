@@ -3,6 +3,7 @@ package day10
 import (
 	"advent/util"
 	"bytes"
+	_ "embed"
 	"log"
 	"time"
 )
@@ -11,6 +12,9 @@ type op struct {
 	name  string
 	value int
 }
+
+//go:embed input.txt
+var Input []byte
 
 func Run(input []byte) error {
 	start := time.Now()

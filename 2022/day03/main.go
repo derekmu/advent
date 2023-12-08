@@ -2,8 +2,12 @@ package day03
 
 import (
 	"advent/util"
+	_ "embed"
 	"log"
 )
+
+//go:embed input.txt
+var Input []byte
 
 func Run(input []byte) error {
 	sumPriorities1 := 0

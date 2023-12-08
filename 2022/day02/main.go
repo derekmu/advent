@@ -3,6 +3,7 @@ package day02
 import (
 	"bufio"
 	"bytes"
+	_ "embed"
 	"errors"
 	"log"
 )
@@ -32,6 +33,9 @@ var (
 		"scissor": 3,
 	}
 )
+
+//go:embed input.txt
+var Input []byte
 
 func Run(input []byte) error {
 	totalScore1 := 0

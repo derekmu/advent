@@ -2,8 +2,12 @@ package day06
 
 import (
 	"advent/util"
+	_ "embed"
 	"log"
 )
+
+//go:embed input.txt
+var Input []byte
 
 func Run(input []byte) error {
 	lines := util.ParseInputLines(input)

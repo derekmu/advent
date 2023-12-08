@@ -3,6 +3,7 @@ package day02
 import (
 	"advent/util"
 	"bytes"
+	_ "embed"
 	"errors"
 	"fmt"
 	"time"
@@ -18,6 +19,9 @@ type game struct {
 	gameId int
 	sets   []*set
 }
+
+//go:embed input.txt
+var Input []byte
 
 func Run(input []byte) error {
 	start := time.Now()

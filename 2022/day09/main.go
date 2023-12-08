@@ -2,6 +2,7 @@ package day09
 
 import (
 	"advent/util"
+	_ "embed"
 	"log"
 	"time"
 )
@@ -32,6 +33,9 @@ func (p *point) update(f *point) bool {
 	}
 	return false
 }
+
+//go:embed input.txt
+var Input []byte
 
 func Run(input []byte) error {
 	start := time.Now()

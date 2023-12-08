@@ -2,6 +2,7 @@ package day13
 
 import (
 	"advent/util"
+	_ "embed"
 	"slices"
 	"time"
 )
@@ -11,6 +12,9 @@ type node struct {
 	list   []*node
 	parent *node
 }
+
+//go:embed input.txt
+var Input []byte
 
 func Run(input []byte) error {
 	start := time.Now()
