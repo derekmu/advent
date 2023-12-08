@@ -21,6 +21,7 @@ import (
 	day2305 "advent/2023/day05"
 	day2306 "advent/2023/day06"
 	day2307 "advent/2023/day07"
+	"advent/util"
 	"context"
 	"github.com/urfave/cli/v3"
 	"log"
@@ -30,7 +31,7 @@ import (
 type problem struct {
 	year   string
 	day    string
-	runner func([]byte) error
+	runner func([]byte) (*util.Result, error)
 	input  []byte
 }
 
@@ -62,20 +63,14 @@ var problems = []problem{
 func main() {
 	var yearCommands []*cli.Command
 	yearMap := make(map[string]*cli.Command, 2)
-	for _, pLoop := range problems {
-		p := pLoop
+	for _, p := range problems {
 		yearCommand, ok := yearMap[p.year]
 		if !ok {
-			yearCommand = &cli.Command{Name: p.year}
+			yearCommand = makeYearCommand(p.year)
 			yearMap[p.year] = yearCommand
 			yearCommands = append(yearCommands, yearCommand)
 		}
-		yearCommand.Commands = append(yearCommand.Commands, &cli.Command{
-			Name: p.day,
-			Action: func(ctx context.Context, cmd *cli.Command) error {
-				return p.runner(p.input)
-			},
-		})
+		yearCommand.Commands = append(yearCommand.Commands, makeProblemCommand(p))
 	}
 
 	cmd := &cli.Command{
@@ -83,9 +78,61 @@ func main() {
 		Usage:           "Run Advent of Code problems",
 		HideHelpCommand: true,
 		Commands:        yearCommands,
+		Action: func(ctx context.Context, cmd *cli.Command) error {
+			var results []*util.Result
+			for _, p := range problems {
+				result, err := p.runner(p.input)
+				if err != nil {
+					return err
+				}
+				result.Year = p.year
+				result.Day = p.day
+				results = append(results, result)
+			}
+			util.PrintResults(results...)
+			return nil
+		},
 	}
 
 	if err := cmd.Run(context.Background(), os.Args); err != nil {
 		log.Fatal(err)
+	}
+}
+
+func makeYearCommand(year string) *cli.Command {
+	return &cli.Command{
+		Name: year,
+		Action: func(ctx context.Context, cmd *cli.Command) error {
+			var results []*util.Result
+			for _, p := range problems {
+				if p.year == year {
+					result, err := p.runner(p.input)
+					if err != nil {
+						return err
+					}
+					result.Year = p.year
+					result.Day = p.day
+					results = append(results, result)
+				}
+			}
+			util.PrintResults(results...)
+			return nil
+		},
+	}
+}
+
+func makeProblemCommand(p problem) *cli.Command {
+	return &cli.Command{
+		Name: p.day,
+		Action: func(ctx context.Context, cmd *cli.Command) error {
+			result, err := p.runner(p.input)
+			if err != nil {
+				return err
+			}
+			result.Year = p.year
+			result.Day = p.day
+			util.PrintResults(result)
+			return nil
+		},
 	}
 }

@@ -3,14 +3,22 @@ package day06
 import (
 	"advent/util"
 	_ "embed"
-	"log"
+	"time"
 )
 
 //go:embed input.txt
 var Input []byte
 
-func Run(input []byte) error {
+func Run(input []byte) (*util.Result, error) {
+	start := time.Now()
+
 	lines := util.ParseInputLines(input)
+
+	parse := time.Now()
+
+	part1 := 0
+	part2 := 0
+
 	for _, line := range lines {
 		chars4 := map[uint8]int{}
 		fin4 := false
@@ -18,17 +26,26 @@ func Run(input []byte) error {
 		fin14 := false
 		for i := 0; i < len(line) && (!fin4 || !fin14); i++ {
 			if !fin4 {
-				fin4 = updateCharCountMap(chars4, 4, line, i)
+				part1, fin4 = updateCharCountMap(chars4, 4, line, i)
 			}
 			if !fin14 {
-				fin14 = updateCharCountMap(chars14, 14, line, i)
+				part2, fin14 = updateCharCountMap(chars14, 14, line, i)
 			}
 		}
 	}
-	return nil
+
+	end := time.Now()
+
+	return &util.Result{
+		Part1:     part1,
+		Part2:     part2,
+		StartTime: start,
+		ParseTime: parse,
+		EndTime:   end,
+	}, nil
 }
 
-func updateCharCountMap(charCountMap1 map[uint8]int, size int, line []byte, i int) bool {
+func updateCharCountMap(charCountMap1 map[uint8]int, size int, line []byte, i int) (int, bool) {
 	c := line[i]
 	v, _ := charCountMap1[c]
 	charCountMap1[c] = v + 1
@@ -42,8 +59,7 @@ func updateCharCountMap(charCountMap1 map[uint8]int, size int, line []byte, i in
 		}
 	}
 	if len(charCountMap1) == size {
-		log.Printf("The number of characters to process before the first start of packet of size %d is %d", size, i+1)
-		return true
+		return i + 1, true
 	}
-	return false
+	return -1, false
 }

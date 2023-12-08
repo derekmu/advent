@@ -1,7 +1,7 @@
 package util
 
 import (
-	"log"
+	"fmt"
 )
 
 func Btoi(bytes []byte) int {
@@ -12,7 +12,7 @@ func Btoi(bytes []byte) int {
 	}
 	for _, b := range bytes {
 		if b < '0' || b > '9' {
-			log.Panicf("invalid character %d %c", b, b)
+			panic(fmt.Sprintf("invalid character %d %c", b, b))
 		}
 		result = result*10 + int(b-'0')
 	}

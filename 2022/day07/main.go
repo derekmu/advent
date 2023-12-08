@@ -6,7 +6,7 @@ import (
 	_ "embed"
 	"errors"
 	"fmt"
-	"log"
+	"time"
 )
 
 type file struct {
@@ -88,7 +88,9 @@ func (d *directory) getSmallestDirToDelete(minSize, haveSize int) int {
 //go:embed input.txt
 var Input []byte
 
-func Run(input []byte) error {
+func Run(input []byte) (*util.Result, error) {
+	start := time.Now()
+
 	root := &directory{
 		name:     "/",
 		children: map[string]*directory{},
@@ -96,7 +98,6 @@ func Run(input []byte) error {
 	}
 	cd := root
 	lsing := false
-
 	lines := util.ParseInputLines(input)
 	for _, line := range lines {
 		if line[0] == '$' {
@@ -114,7 +115,7 @@ func Run(input []byte) error {
 			} else if bytes.Equal(command, []byte("ls")) {
 				lsing = true
 			} else {
-				return errors.New(fmt.Sprintf("unrecognized command: %s", line[2:4]))
+				return nil, errors.New(fmt.Sprintf("unrecognized command: %s", line[2:4]))
 			}
 		} else if lsing {
 			if bytes.Equal(line[0:3], []byte("dir")) {
@@ -127,10 +128,11 @@ func Run(input []byte) error {
 				cd.getFile(fileName, size)
 			}
 		} else {
-
-			return errors.New(fmt.Sprintf("unrecognized line: %s", line))
+			return nil, errors.New(fmt.Sprintf("unrecognized line: %s", line))
 		}
 	}
+
+	parse := time.Now()
 
 	root.updateSize()
 	part1 := root.sumSizeOfSmallDirectories()
@@ -140,8 +142,13 @@ func Run(input []byte) error {
 	minSize := needSize - emptySize
 	part2 := root.getSmallestDirToDelete(minSize, root.size)
 
-	log.Printf("The sum of the sizes of directories at most 100,000 size is %d", part1)
-	log.Printf("The size of the smallest directory that could be deleted to create space is %d", part2)
+	end := time.Now()
 
-	return nil
+	return &util.Result{
+		Part1:     part1,
+		Part2:     part2,
+		StartTime: start,
+		ParseTime: parse,
+		EndTime:   end,
+	}, nil
 }

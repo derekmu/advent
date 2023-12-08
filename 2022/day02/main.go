@@ -1,11 +1,12 @@
 package day02
 
 import (
+	"advent/util"
 	"bufio"
 	"bytes"
 	_ "embed"
 	"errors"
-	"log"
+	"time"
 )
 
 var (
@@ -37,25 +38,29 @@ var (
 //go:embed input.txt
 var Input []byte
 
-func Run(input []byte) error {
-	totalScore1 := 0
-	totalScore2 := 0
+func Run(input []byte) (*util.Result, error) {
+	start := time.Now()
+
+	parse := time.Now()
+
+	part1 := 0
+	part2 := 0
 
 	scanner := bufio.NewScanner(bytes.NewReader(input))
 	scanner.Split(bufio.ScanWords)
 	for scanner.Scan() {
 		theirChoice := choiceMap[scanner.Text()]
 		if !scanner.Scan() {
-			return errors.New("missing second token")
+			return nil, errors.New("missing second token")
 		}
 		me := scanner.Text()
 		myChoice := choiceMap[me]
 		if myChoice == theirChoice {
-			totalScore1 += 3
+			part1 += 3
 		} else if winsMap[myChoice] == theirChoice {
-			totalScore1 += 6
+			part1 += 6
 		}
-		totalScore1 += scoreMap[myChoice]
+		part1 += scoreMap[myChoice]
 
 		switch me {
 		case "X":
@@ -66,15 +71,20 @@ func Run(input []byte) error {
 			myChoice = losesMap[theirChoice]
 		}
 		if myChoice == theirChoice {
-			totalScore2 += 3
+			part2 += 3
 		} else if winsMap[myChoice] == theirChoice {
-			totalScore2 += 6
+			part2 += 6
 		}
-		totalScore2 += scoreMap[myChoice]
+		part2 += scoreMap[myChoice]
 	}
 
-	log.Printf("The total score for part 1 would be %d.", totalScore1)
-	log.Printf("The total score for part 2 would be %d.", totalScore2)
+	end := time.Now()
 
-	return nil
+	return &util.Result{
+		Part1:     part1,
+		Part2:     part2,
+		StartTime: start,
+		ParseTime: parse,
+		EndTime:   end,
+	}, nil
 }

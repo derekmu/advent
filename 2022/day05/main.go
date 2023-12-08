@@ -4,14 +4,19 @@ import (
 	"advent/util"
 	"bytes"
 	_ "embed"
-	"log"
+	"time"
 )
 
 //go:embed input.txt
 var Input []byte
 
-func Run(input []byte) error {
+func Run(input []byte) (*util.Result, error) {
+	start := time.Now()
+
 	lines := util.ParseInputLines(input)
+
+	parse := time.Now()
+
 	lineI := 0
 
 	// read stacks
@@ -63,15 +68,20 @@ func Run(input []byte) error {
 	}
 
 	// assemble answer
-	result1 := ""
-	result2 := ""
+	part1 := ""
+	part2 := ""
 	for i := 0; i < len(stacks1); i++ {
-		result1 = result1 + string(stacks1[i][len(stacks1[i])-1])
-		result2 = result2 + string(stacks2[i][len(stacks2[i])-1])
+		part1 = part1 + string(stacks1[i][len(stacks1[i])-1])
+		part2 = part2 + string(stacks2[i][len(stacks2[i])-1])
 	}
 
-	log.Printf("The crates at the top of each stack for part 1 are %s", result1)
-	log.Printf("The crates at the top of each stack for part 2 are %s", result2)
+	end := time.Now()
 
-	return nil
+	return &util.Result{
+		Part1:     part1,
+		Part2:     part2,
+		StartTime: start,
+		ParseTime: parse,
+		EndTime:   end,
+	}, nil
 }

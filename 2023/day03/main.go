@@ -21,7 +21,7 @@ type index struct {
 //go:embed input.txt
 var Input []byte
 
-func Run(input []byte) error {
+func Run(input []byte) (*util.Result, error) {
 	start := time.Now()
 
 	lines := util.ParseInputLines(input)
@@ -87,7 +87,11 @@ func Run(input []byte) error {
 
 	end := time.Now()
 
-	util.PrintResults(part1, part2, start, parse, end)
-
-	return nil
+	return &util.Result{
+		Part1:     part1,
+		Part2:     part2,
+		StartTime: start,
+		ParseTime: parse,
+		EndTime:   end,
+	}, nil
 }

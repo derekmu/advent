@@ -3,7 +3,7 @@ package day09
 import (
 	"advent/util"
 	_ "embed"
-	"log"
+	"fmt"
 	"time"
 )
 
@@ -37,7 +37,7 @@ func (p *point) update(f *point) bool {
 //go:embed input.txt
 var Input []byte
 
-func Run(input []byte) error {
+func Run(input []byte) (*util.Result, error) {
 	start := time.Now()
 
 	lines := util.ParseInputLines(input)
@@ -50,7 +50,6 @@ func Run(input []byte) error {
 	}
 
 	parse := time.Now()
-	end := time.Now()
 
 	part1 := 0
 	h := point{}
@@ -89,9 +88,15 @@ func Run(input []byte) error {
 	}
 	part2 = len(visited)
 
-	util.PrintResults(part1, part2, start, parse, end)
+	end := time.Now()
 
-	return nil
+	return &util.Result{
+		Part1:     part1,
+		Part2:     part2,
+		StartTime: start,
+		ParseTime: parse,
+		EndTime:   end,
+	}, nil
 }
 
 func abs(x int) int {
@@ -112,7 +117,6 @@ func dxy(dir byte) (int, int) {
 	case 'L':
 		return -1, 0
 	default:
-		log.Panicf("unknown direction %c", dir)
-		return 0, 0
+		panic(fmt.Sprintf("unknown direction %c", dir))
 	}
 }

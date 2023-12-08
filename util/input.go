@@ -2,28 +2,9 @@ package util
 
 import (
 	"bytes"
-	"log"
-	"os"
-	"path/filepath"
 )
 
 var newline = []byte{'\n'}
-
-func ReadInput() []byte {
-	input, err := os.ReadFile("input.txt")
-	if err != nil {
-		log.Panic(err)
-	}
-	return input
-}
-
-func ReadDayInput(year, day string) []byte {
-	input, err := os.ReadFile(filepath.Join(year, day, "input.txt"))
-	if err != nil {
-		log.Panic(err)
-	}
-	return input
-}
 
 func ParseInputLines(input []byte) [][]byte {
 	count := bytes.Count(input, newline)

@@ -3,19 +3,24 @@ package day03
 import (
 	"advent/util"
 	_ "embed"
-	"log"
+	"fmt"
+	"time"
 )
 
 //go:embed input.txt
 var Input []byte
 
-func Run(input []byte) error {
-	sumPriorities1 := 0
-	sumPriorities2 := 0
-	lines2 := [3][]byte{}
-	linesI := 0
+func Run(input []byte) (*util.Result, error) {
+	start := time.Now()
 
 	lines := util.ParseInputLines(input)
+
+	parse := time.Now()
+
+	part1 := 0
+	part2 := 0
+	lines2 := [3][]byte{}
+	linesI := 0
 	for _, line := range lines {
 		// problem 1
 		sackOne := line[:len(line)/2]
@@ -26,7 +31,7 @@ func Run(input []byte) error {
 		}
 		for _, c := range sackTwo {
 			if _, ok := sackOneMap[c]; ok {
-				sumPriorities1 += priorityScore(c)
+				part1 += priorityScore(c)
 				break
 			}
 		}
@@ -46,7 +51,7 @@ func Run(input []byte) error {
 			}
 			for _, c := range lines2[2] {
 				if v, ok := matchMap[c]; ok && v == 2 {
-					sumPriorities2 += priorityScore(c)
+					part2 += priorityScore(c)
 					break
 				}
 			}
@@ -54,10 +59,15 @@ func Run(input []byte) error {
 		}
 	}
 
-	log.Printf("The sum of the priorities of misstored items is %d.", sumPriorities1)
-	log.Printf("The sum of the priorities of badges is %d.", sumPriorities2)
+	end := time.Now()
 
-	return nil
+	return &util.Result{
+		Part1:     part1,
+		Part2:     part2,
+		StartTime: start,
+		ParseTime: parse,
+		EndTime:   end,
+	}, nil
 }
 
 func priorityScore(c byte) int {
@@ -66,6 +76,5 @@ func priorityScore(c byte) int {
 	} else if c >= 'a' && c <= 'z' {
 		return int(c - 'a' + 1)
 	}
-	log.Panicf("Could not determine the score for %c", c)
-	return -1
+	panic(fmt.Sprintf("Could not determine the score for %c", c))
 }

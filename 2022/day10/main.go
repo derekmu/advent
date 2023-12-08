@@ -4,7 +4,7 @@ import (
 	"advent/util"
 	"bytes"
 	_ "embed"
-	"log"
+	"fmt"
 	"time"
 )
 
@@ -16,7 +16,7 @@ type op struct {
 //go:embed input.txt
 var Input []byte
 
-func Run(input []byte) error {
+func Run(input []byte) (*util.Result, error) {
 	start := time.Now()
 
 	lines := util.ParseInputLines(input)
@@ -36,7 +36,6 @@ func Run(input []byte) error {
 	parse := time.Now()
 
 	part1 := 0
-	part2 := -1
 	x := 1
 	cycle := 0
 	screen := [6][40]bool{}
@@ -58,24 +57,35 @@ func Run(input []byte) error {
 			nextCycle()
 			x += o.value
 		default:
-			log.Panicf("unknown operation %s", o.name)
+			panic(fmt.Sprintf("unknown operation %s", o.name))
 		}
 	}
 
-	for _, row := range screen {
+	part2Bytes := make([]byte, len(screen)*(len(screen[0])+1)-1)
+	bi := 0
+	for ri, row := range screen {
+		if ri > 0 {
+			part2Bytes[bi] = '\n'
+			bi++
+		}
 		for i := 0; i < len(row); i++ {
 			if row[i] {
-				print("#")
+				part2Bytes[bi] = '#'
 			} else {
-				print(" ")
+				part2Bytes[bi] = ' '
 			}
+			bi++
 		}
-		println()
 	}
+	part2 := string(part2Bytes)
 
 	end := time.Now()
 
-	util.PrintResults(part1, part2, start, parse, end)
-
-	return nil
+	return &util.Result{
+		Part1:     part1,
+		Part2:     part2,
+		StartTime: start,
+		ParseTime: parse,
+		EndTime:   end,
+	}, nil
 }

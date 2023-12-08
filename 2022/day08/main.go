@@ -3,15 +3,16 @@ package day08
 import (
 	"advent/util"
 	_ "embed"
-	"log"
+	"time"
 )
 
 //go:embed input.txt
 var Input []byte
 
-func Run(input []byte) error {
-	var viz [][]bool
+func Run(input []byte) (*util.Result, error) {
+	start := time.Now()
 
+	var viz [][]bool
 	trees := util.ParseInputLines(input)
 	for _, line := range trees {
 		vizRow := make([]bool, len(line))
@@ -32,6 +33,8 @@ func Run(input []byte) error {
 		}
 	}
 
+	parse := time.Now()
+
 	for col := 0; col < len(trees[0]); col++ {
 		maxHeight := uint8('0' - 1)
 		for row := 0; row < len(trees); row++ {
@@ -49,12 +52,12 @@ func Run(input []byte) error {
 		}
 	}
 
-	visibleTrees := 0
-	maxScenicScore := 0
+	part1 := 0
+	part2 := 0
 	for row := 0; row < len(viz); row++ {
 		for col := 0; col < len(viz[row]); col++ {
 			if viz[row][col] {
-				visibleTrees++
+				part1++
 			}
 
 			north := 0
@@ -86,14 +89,19 @@ func Run(input []byte) error {
 				}
 			}
 
-			if north*south*east*west > maxScenicScore {
-				maxScenicScore = north * south * east * west
+			if north*south*east*west > part2 {
+				part2 = north * south * east * west
 			}
 		}
 	}
 
-	log.Printf("The number of visible trees from outside the grid is %d", visibleTrees)
-	log.Printf("The maximum scenic score possible is %d", maxScenicScore)
+	end := time.Now()
 
-	return nil
+	return &util.Result{
+		Part1:     part1,
+		Part2:     part2,
+		StartTime: start,
+		ParseTime: parse,
+		EndTime:   end,
+	}, nil
 }
