@@ -8,23 +8,9 @@ import (
 )
 
 type node struct {
-	value      uint32
-	left       uint32
-	right      uint32
-	step       int
-	atEndpoint *visitedNode
-}
-
-type visited struct {
-	value     uint32
-	moveIndex int
-}
-
-type visitedNode struct {
-	visited
-	previous    *visitedNode
-	next        *visitedNode
-	stepsToNext int
+	value uint32
+	left  uint32
+	right uint32
 }
 
 const (
@@ -64,76 +50,25 @@ func Run(input []byte) (*util.Result, error) {
 		part1++
 	}
 
-	starts := make([]*node, 0, 6)
+	steps := make([]int, 0, 6)
 	for _, n := range nodeMap {
 		if n.value&0xFF == 'A' {
-			starts = append(starts, n)
-		}
-	}
-	for _, ocur := range starts {
-		visitedEndpoints := make(map[visited]int, 12)
-		step := 0
-		var v visited
-		var pv *visitedNode
-		cur = ocur
-		for {
-			if cur.value&0xFF == 'Z' {
-				v = visited{value: cur.value, moveIndex: step % len(moves)}
-				nv := &visitedNode{visited: v, previous: pv}
-				if pv != nil {
-					pv.next = nv
+			step := 0
+			for n.value&0xFF != 'Z' {
+				switch moves[step%len(moves)] {
+				case 'L':
+					n = nodeMap[n.left]
+				case 'R':
+					n = nodeMap[n.right]
+				default:
+					panic(fmt.Sprintf("unknown move %c", moves[step%len(moves)]))
 				}
-				pv = nv
-				if _, ok := visitedEndpoints[v]; ok {
-					break
-				}
-				visitedEndpoints[v] = step
+				step++
 			}
-			switch moves[step%len(moves)] {
-			case 'L':
-				cur = nodeMap[cur.left]
-			case 'R':
-				cur = nodeMap[cur.right]
-			default:
-				panic(fmt.Sprintf("unknown move %c", moves[step%len(moves)]))
-			}
-			step++
-		}
-		ocur.step = visitedEndpoints[v] // start at the first endpoint in the loop
-		fv := pv.previous
-		for fv.visited != pv.visited {
-			fv = fv.previous
-		}
-		fv.previous = pv.previous
-		pv.previous.next = fv
-		fv.stepsToNext = step - visitedEndpoints[fv.previous.visited]
-		fv = fv.next
-		for fv.stepsToNext == 0 {
-			fv.stepsToNext = visitedEndpoints[fv.next.visited] - visitedEndpoints[fv.visited]
-			fv = fv.next
-		}
-		ocur.atEndpoint = fv
-	}
-	part2 := 0
-	done := false
-	for !done {
-		var lowestCur *node
-		for _, cur := range starts {
-			if lowestCur == nil || cur.step < lowestCur.step {
-				lowestCur = cur
-			}
-		}
-		lowestCur.step += lowestCur.atEndpoint.stepsToNext
-		lowestCur.atEndpoint = lowestCur.atEndpoint.next
-		part2 = lowestCur.step
-		done = true
-		for _, cur := range starts {
-			if cur.step != part2 {
-				done = false
-				break
-			}
+			steps = append(steps, step)
 		}
 	}
+	part2 := findLCM(steps)
 
 	end := time.Now()
 
@@ -144,4 +79,23 @@ func Run(input []byte) (*util.Result, error) {
 		ParseTime: parse,
 		EndTime:   end,
 	}, nil
+}
+
+func gcd(a, b int) int {
+	for b != 0 {
+		a, b = b, a%b
+	}
+	return a
+}
+
+func lcm(a, b int) int {
+	return a * b / gcd(a, b)
+}
+
+func findLCM(numbers []int) int {
+	result := numbers[0]
+	for i := 1; i < len(numbers); i++ {
+		result = lcm(result, numbers[i])
+	}
+	return result
 }
