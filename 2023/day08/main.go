@@ -8,61 +8,68 @@ import (
 )
 
 type node struct {
-	value uint32
 	left  uint32
 	right uint32
 }
 
-const (
-	origin      = uint32('A')<<16 | uint32('A')<<8 | uint32('A')
-	destination = uint32('Z')<<16 | uint32('Z')<<8 | uint32('Z')
+var (
+	origin      = stoui("AAA")
+	destination = stoui("ZZZ")
 )
 
 //go:embed input.txt
 var Input []byte
 
+func parseInput(input []byte) (moves []byte, nodeMap map[uint32]*node) {
+	lines := util.ParseInputLines(input)
+	moves = lines[0]
+	nodeMap = make(map[uint32]*node, len(lines)-2)
+	for _, line := range lines[2:] {
+		v := b3toui(line[0:3])
+		l := b3toui(line[7:10])
+		r := b3toui(line[12:15])
+		nodeMap[v] = &node{left: l, right: r}
+	}
+	return moves, nodeMap
+}
+
 func Run(input []byte) (*util.Result, error) {
 	start := time.Now()
 
-	lines := util.ParseInputLines(input)
-	moves := lines[0]
-	nodeMap := make(map[uint32]*node, len(lines)-2)
-	for _, line := range lines[2:] {
-		v := uint32(line[0])<<16 | uint32(line[1])<<8 | uint32(line[2])
-		l := uint32(line[7])<<16 | uint32(line[8])<<8 | uint32(line[9])
-		r := uint32(line[12])<<16 | uint32(line[13])<<8 | uint32(line[14])
-		nodeMap[v] = &node{value: v, left: l, right: r}
-	}
+	moves, nodeMap := parseInput(input)
 
 	parse := time.Now()
 
-	cur := nodeMap[origin]
+	curKey := origin
+	cur := nodeMap[curKey]
 	part1 := 0
-	for cur.value != destination {
+	for curKey != destination {
 		switch moves[part1%len(moves)] {
 		case 'L':
-			cur = nodeMap[cur.left]
+			curKey = cur.left
 		case 'R':
-			cur = nodeMap[cur.right]
+			curKey = cur.right
 		default:
 			panic(fmt.Sprintf("unknown move %c", moves[part1%len(moves)]))
 		}
+		cur = nodeMap[curKey]
 		part1++
 	}
 
 	steps := make([]int, 0, 6)
-	for _, n := range nodeMap {
-		if n.value&0xFF == 'A' {
+	for k, n := range nodeMap {
+		if k&0xFF == 'A' {
 			step := 0
-			for n.value&0xFF != 'Z' {
+			for k&0xFF != 'Z' {
 				switch moves[step%len(moves)] {
 				case 'L':
-					n = nodeMap[n.left]
+					k = n.left
 				case 'R':
-					n = nodeMap[n.right]
+					k = n.right
 				default:
 					panic(fmt.Sprintf("unknown move %c", moves[step%len(moves)]))
 				}
+				n = nodeMap[k]
 				step++
 			}
 			steps = append(steps, step)
@@ -79,6 +86,14 @@ func Run(input []byte) (*util.Result, error) {
 		ParseTime: parse,
 		EndTime:   end,
 	}, nil
+}
+
+func stoui(bytes string) uint32 {
+	return uint32(bytes[0])<<16 | uint32(bytes[1])<<8 | uint32(bytes[2])
+}
+
+func b3toui(bytes []byte) uint32 {
+	return uint32(bytes[0])<<16 | uint32(bytes[1])<<8 | uint32(bytes[2])
 }
 
 func gcd(a, b int) int {
