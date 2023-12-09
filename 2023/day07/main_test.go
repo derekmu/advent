@@ -44,6 +44,20 @@ func TestParseInput(t *testing.T) {
 	}
 }
 
+func TestRunSample(t *testing.T) {
+	result, err := Run(sampleInput)
+
+	if err != nil {
+		t.Fatal("unexpected error")
+	}
+	if result.Part1 != 6440 {
+		t.Fatal("incorrect part 1")
+	}
+	if result.Part2 != 5905 {
+		t.Fatal("incorrect part 2")
+	}
+}
+
 func TestRun(t *testing.T) {
 	result, err := Run(Input)
 
