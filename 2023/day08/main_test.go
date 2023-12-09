@@ -60,3 +60,10 @@ func TestRun(t *testing.T) {
 		t.Fatal("incorrect part 1")
 	}
 }
+
+func BenchmarkRun(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		result, err := Run(Input)
+		_, _ = result, err
+	}
+}
