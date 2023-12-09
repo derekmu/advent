@@ -6,13 +6,13 @@ import (
 )
 
 var (
-	testInput = []byte(`32T3K 765
+	sampleInput = []byte(`32T3K 765
 T55J5 684
 KK677 28
 KTJJT 220
 QQQJA 483
 `)
-	expectedHands = []*hand{
+	sampleHands = []*hand{
 		{[]byte{1, 0, 8, 1, 11}, 765, onePair, onePair},
 		{[]byte{8, 3, 3, 9, 3}, 684, threeKind, fourKind},
 		{[]byte{11, 11, 4, 5, 5}, 28, twoPair, twoPair},
@@ -22,23 +22,23 @@ QQQJA 483
 )
 
 func TestParseInput(t *testing.T) {
-	hands := parseInput(testInput)
+	hands := parseInput(sampleInput)
 
-	if len(expectedHands) != len(hands) {
+	if len(sampleHands) != len(hands) {
 		t.Fatal("incorrect size of node map")
 	}
 	for i, h := range hands {
-		eh := expectedHands[i]
-		if !bytes.Equal(h.cards, eh.cards) {
+		sh := sampleHands[i]
+		if !bytes.Equal(h.cards, sh.cards) {
 			t.Fatal("incorrect cards")
 		}
-		if h.bid != eh.bid {
+		if h.bid != sh.bid {
 			t.Fatal("incorrect bid")
 		}
-		if h.class1 != eh.class1 {
+		if h.class1 != sh.class1 {
 			t.Fatal("incorrect class1")
 		}
-		if h.class2 != eh.class2 {
+		if h.class2 != sh.class2 {
 			t.Fatal("incorrect class2")
 		}
 	}

@@ -6,7 +6,7 @@ import (
 )
 
 var (
-	testInput = []byte(`RL
+	sampleInput = []byte(`RL
 
 AAA = (BBB, CCC)
 BBB = (DDD, EEE)
@@ -16,7 +16,7 @@ EEE = (EEE, EEE)
 GGG = (GGG, GGG)
 ZZZ = (ZZZ, ZZZ)
 `)
-	expectedNodeMap = map[uint32]*node{
+	sampleNodeMap = map[uint32]*node{
 		stoui("AAA"): {stoui("BBB"), stoui("CCC")},
 		stoui("BBB"): {stoui("DDD"), stoui("EEE")},
 		stoui("CCC"): {stoui("ZZZ"), stoui("GGG")},
@@ -28,20 +28,20 @@ ZZZ = (ZZZ, ZZZ)
 )
 
 func TestParseInput(t *testing.T) {
-	moves, nodeMap := parseInput(testInput)
+	moves, nodeMap := parseInput(sampleInput)
 
 	if !bytes.Equal(moves, []byte("RL")) {
 		t.Fatal("incorrect moves parsed")
 	}
-	if len(expectedNodeMap) != len(nodeMap) {
+	if len(sampleNodeMap) != len(nodeMap) {
 		t.Fatal("incorrect size of node map")
 	}
-	for k, v := range nodeMap {
-		ev := expectedNodeMap[k]
-		if ev.left != v.left {
+	for k, n := range nodeMap {
+		sn := sampleNodeMap[k]
+		if sn.left != n.left {
 			t.Fatal("incorrect left")
 		}
-		if ev.right != v.right {
+		if sn.right != n.right {
 			t.Fatal("incorrect right")
 		}
 	}

@@ -15,7 +15,8 @@ func parseInput(input []byte) [][]int {
 	output := make([][]int, 0, len(lines))
 	for _, line := range lines {
 		nums := bytes.Split(line, []byte(" "))
-		out := make([]int, 0, len(nums)+1)
+		out := make([]int, 0, len(nums)+2)
+		out = append(out, 0)
 		for _, num := range nums {
 			out = append(out, util.Btoi(num))
 		}
@@ -33,6 +34,7 @@ func Run(input []byte) (*util.Result, error) {
 
 	layers := make([][]int, 19)
 	part1 := 0
+	part2 := 0
 	var layer, prev []int
 	for _, seq := range sequences {
 		li := 0
@@ -40,13 +42,14 @@ func Run(input []byte) (*util.Result, error) {
 		prev = seq
 		for !done {
 			if li >= len(layers) {
-				layer = make([]int, 0, 22)
+				layer = make([]int, 0, 23)
 				layers = append(layers, layer)
 			} else {
 				layer = layers[li][:0]
 			}
+			layer = append(layer, 0)
 			done = true
-			for i := 0; i < len(prev)-1; i++ {
+			for i := 1; i < len(prev)-1; i++ {
 				d := prev[i+1] - prev[i]
 				layer = append(layer, d)
 				done = done && d == 0
@@ -59,14 +62,16 @@ func Run(input []byte) (*util.Result, error) {
 		for ; li >= 0; li-- {
 			layer = layers[li]
 			if li == 0 {
+				seq[0] = seq[1] - layer[0]
 				seq = append(seq, seq[len(seq)-1]+layer[len(layer)-1])
 			} else {
+				layers[li-1][0] = layers[li-1][1] - layer[0]
 				layers[li-1] = append(layers[li-1], layers[li-1][len(layers[li-1])-1]+layer[len(layer)-1])
 			}
 		}
 		part1 += seq[len(seq)-1]
+		part2 += seq[0]
 	}
-	part2 := -1
 
 	end := time.Now()
 

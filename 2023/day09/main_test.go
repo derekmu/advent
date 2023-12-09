@@ -6,19 +6,19 @@ import (
 )
 
 var (
-	testInput = []byte(`0 3 6 9 12 15
+	sampleInput = []byte(`0 3 6 9 12 15
 1 3 6 10 15 21
 10 13 16 21 30 45
 `)
 	expectedSequences = [][]int{
-		{0, 3, 6, 9, 12, 15},
-		{1, 3, 6, 10, 15, 21},
-		{10, 13, 16, 21, 30, 45},
+		{0, 0, 3, 6, 9, 12, 15},
+		{0, 1, 3, 6, 10, 15, 21},
+		{0, 10, 13, 16, 21, 30, 45},
 	}
 )
 
 func TestParseInput(t *testing.T) {
-	sequences := parseInput(testInput)
+	sequences := parseInput(sampleInput)
 
 	if len(sequences) != len(expectedSequences) {
 		t.Fatal("incorrect sequence count")
@@ -31,6 +31,20 @@ func TestParseInput(t *testing.T) {
 	}
 }
 
+func TestRunSample(t *testing.T) {
+	result, err := Run(sampleInput)
+
+	if err != nil {
+		t.Fatal("unexpected error")
+	}
+	if result.Part1 != 114 {
+		t.Fatal("incorrect part 1")
+	}
+	if result.Part2 != 2 {
+		t.Fatal("incorrect part 2")
+	}
+}
+
 func TestRun(t *testing.T) {
 	result, err := Run(Input)
 
@@ -40,9 +54,9 @@ func TestRun(t *testing.T) {
 	if result.Part1 != 1666172641 {
 		t.Fatal("incorrect part 1")
 	}
-	//if result.Part2 != 16187743689077 {
-	//	t.Fatal("incorrect part 2")
-	//}
+	if result.Part2 != 933 {
+		t.Fatal("incorrect part 2")
+	}
 }
 
 func BenchmarkRun(b *testing.B) {
