@@ -45,19 +45,18 @@ const (
 //go:embed input.txt
 var Input []byte
 
-func Run(input []byte) (*util.Result, error) {
-	start := time.Now()
-
-	hands := make([]*hand, 0, 1000)
+func parseInput(input []byte) (hands []*hand) {
+	hands = make([]*hand, 0, 1000)
 	lines := util.ParseInputLines(input)
 	counts := [13]byte{}
 	for _, line := range lines {
-		cards, bid, _ := bytes.Cut(line, []byte(" "))
+		cardsB, bid, _ := bytes.Cut(line, []byte(" "))
+		cards := make([]byte, 5)
 		counts = [13]byte{}
 		class1 := byte(0)
 		hasTrio, duoCount := false, 0
 		for i := 0; i < 5; i++ {
-			cards[i] = cardMap[cards[i]]
+			cards[i] = cardMap[cardsB[i]]
 			counts[cards[i]]++
 			if counts[cards[i]] == 5 {
 				class1 = fiveKind
@@ -119,6 +118,13 @@ func Run(input []byte) (*util.Result, error) {
 		}
 		hands = append(hands, &hand{cards: cards, bid: util.Btoi(bid), class1: class1, class2: class2})
 	}
+	return hands
+}
+
+func Run(input []byte) (*util.Result, error) {
+	start := time.Now()
+
+	hands := parseInput(input)
 
 	parse := time.Now()
 

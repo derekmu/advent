@@ -57,7 +57,7 @@ func TestRun(t *testing.T) {
 		t.Fatal("incorrect part 1")
 	}
 	if result.Part2 != 16187743689077 {
-		t.Fatal("incorrect part 1")
+		t.Fatal("incorrect part 2")
 	}
 }
 
