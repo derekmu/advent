@@ -22,6 +22,7 @@ import (
 	day2306 "advent/2023/day06"
 	day2307 "advent/2023/day07"
 	day2308 "advent/2023/day08"
+	day2309 "advent/2023/day09"
 	"advent/util"
 	"context"
 	"github.com/urfave/cli/v3"
@@ -60,6 +61,7 @@ var problems = []problem{
 	{year: "2023", day: "6", runner: day2306.Run, input: day2306.Input},
 	{year: "2023", day: "7", runner: day2307.Run, input: day2307.Input},
 	{year: "2023", day: "8", runner: day2308.Run, input: day2308.Input},
+	{year: "2023", day: "9", runner: day2309.Run, input: day2309.Input},
 }
 
 func main() {
