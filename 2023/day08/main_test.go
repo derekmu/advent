@@ -16,6 +16,17 @@ EEE = (EEE, EEE)
 GGG = (GGG, GGG)
 ZZZ = (ZZZ, ZZZ)
 `)
+	sampleInput2 = []byte(`LR
+
+11A = (11B, XXX)
+11B = (XXX, 11Z)
+11Z = (11B, XXX)
+22A = (22B, XXX)
+22B = (22C, 22C)
+22C = (22Z, 22Z)
+22Z = (22B, 22B)
+XXX = (XXX, XXX)
+`)
 	sampleNodeMap = map[uint32]*node{
 		stoui("AAA"): {stoui("BBB"), stoui("CCC")},
 		stoui("BBB"): {stoui("DDD"), stoui("EEE")},
@@ -44,6 +55,34 @@ func TestParseInput(t *testing.T) {
 		if sn.right != n.right {
 			t.Fatal("incorrect right")
 		}
+	}
+}
+
+func TestRunSample(t *testing.T) {
+	result, err := Run(sampleInput)
+
+	if err != nil {
+		t.Fatal("unexpected error")
+	}
+	if result.Part1 != 2 {
+		t.Fatal("incorrect part 1")
+	}
+	if result.Part2 != 2 {
+		t.Fatal("incorrect part 2")
+	}
+}
+
+func TestRunSample2(t *testing.T) {
+	result, err := Run(sampleInput2)
+
+	if err != nil {
+		t.Fatal("unexpected error")
+	}
+	if result.Part1 != -1 {
+		t.Fatal("incorrect part 1")
+	}
+	if result.Part2 != 6 {
+		t.Fatal("incorrect part 2")
 	}
 }
 

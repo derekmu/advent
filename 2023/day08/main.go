@@ -41,19 +41,21 @@ func Run(input []byte) (*util.Result, error) {
 	parse := time.Now()
 
 	curKey := origin
-	cur := nodeMap[curKey]
-	part1 := 0
-	for curKey != destination {
-		switch moves[part1%len(moves)] {
-		case 'L':
-			curKey = cur.left
-		case 'R':
-			curKey = cur.right
-		default:
-			panic(fmt.Sprintf("unknown move %c", moves[part1%len(moves)]))
+	part1 := -1
+	if cur, ok := nodeMap[curKey]; ok {
+		part1 = 0
+		for curKey != destination {
+			switch moves[part1%len(moves)] {
+			case 'L':
+				curKey = cur.left
+			case 'R':
+				curKey = cur.right
+			default:
+				panic(fmt.Sprintf("unknown move %c", moves[part1%len(moves)]))
+			}
+			cur = nodeMap[curKey]
+			part1++
 		}
-		cur = nodeMap[curKey]
-		part1++
 	}
 
 	steps := make([]int, 0, 6)
