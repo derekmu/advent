@@ -73,7 +73,7 @@ func Run(input []byte) (*util.Result, error) {
 	parse := time.Now()
 
 	pathers := [2]pather{}
-	startDir := [2]direction{}
+	startDirs := [2]direction{}
 	pi := 0
 	for dir := up; dir <= left && pi < 2; dir++ {
 		p := starter.goDir(dir)
@@ -81,13 +81,12 @@ func Run(input []byte) (*util.Result, error) {
 			d1, d2 := connections(lines[p.row][p.col])
 			if d1 == p.entered || d2 == p.entered {
 				pathers[pi] = p
-				startDir[pi] = dir
+				startDirs[pi] = dir
 				pi++
 				continue
 			}
 		}
 	}
-	startPipe := getPipe(startDir)
 	loopSet := make(map[point]bool, 13902)
 	loopSet[starter.point] = true
 	loopSet[pathers[0].point] = true
@@ -117,9 +116,8 @@ func Run(input []byte) (*util.Result, error) {
 		inside := false
 		for col, c := range line {
 			if _, ok := loopSet[point{row, col}]; ok {
-				// on the loop
 				if c == 'S' {
-					c = startPipe
+					c = getPipe(startDirs)
 				}
 				d1, d2 := connections(c)
 				if d1 == up {
@@ -131,12 +129,6 @@ func Run(input []byte) (*util.Result, error) {
 					ups++
 				} else if d2 == down {
 					downs++
-				}
-				for ups > 1 {
-					ups -= 2
-				}
-				for downs > 1 {
-					downs -= 2
 				}
 				for ups > 0 && downs > 0 {
 					inside = !inside
