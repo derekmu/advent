@@ -11,12 +11,17 @@ import (
 //go:embed input.txt
 var Input []byte
 
-func Run(input []byte) (*util.Result, error) {
-	start := time.Now()
-
+func parseInput(input []byte) ([]int, int, []int, int) {
 	lines := util.ParseInputLines(input)
 	times, realTime := parseNums(lines[0])
 	dists, realDist := parseNums(lines[1])
+	return times, realTime, dists, realDist
+}
+
+func Run(input []byte) (*util.Result, error) {
+	start := time.Now()
+
+	times, realTime, dists, realDist := parseInput(input)
 
 	parse := time.Now()
 
@@ -51,7 +56,11 @@ func raceWins(time, dist int) int {
 	//  a = -1
 	//  b = t
 	//  c = -d
-	hold := int(math.Ceil((float64(-time) + math.Sqrt(float64(time*time-4*dist))) / -2))
+	holdMatch := (float64(-time) + math.Sqrt(float64(time*time-4*dist))) / -2
+	// if we use math.Ceil and the match time is exactly an integer, it won't round up and we won't beat the record
+	// for example, the math for time=30, dist=200 results in holdMatch=10.0
+	// instead, add 1 and floor it to ensure that the hold time is longer than needed to match the record
+	hold := int(math.Floor(holdMatch + 1))
 	return time - hold - hold + 1
 }
 
