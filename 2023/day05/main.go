@@ -25,9 +25,7 @@ type mapper []rangeMap
 //go:embed input.txt
 var Input []byte
 
-func Run(input []byte) (*util.Result, error) {
-	start := time.Now()
-
+func parseInput(input []byte) ([]int, []mapper) {
 	lines := util.ParseInputLines(input)
 	line, _ := bytes.CutPrefix(lines[0], []byte("seeds: "))
 	seeds := make([]int, 0, 20)
@@ -52,6 +50,13 @@ func Run(input []byte) (*util.Result, error) {
 		rm := parseMapper(mapperLines)
 		mappers = append(mappers, rm)
 	}
+	return seeds, mappers
+}
+
+func Run(input []byte) (*util.Result, error) {
+	start := time.Now()
+
+	seeds, mappers := parseInput(input)
 
 	parse := time.Now()
 
