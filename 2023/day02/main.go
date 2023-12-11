@@ -10,9 +10,9 @@ import (
 )
 
 type set struct {
-	redCount   int
-	greenCount int
-	blueCount  int
+	red   int
+	green int
+	blue  int
 }
 
 type game struct {
@@ -23,9 +23,7 @@ type game struct {
 //go:embed input.txt
 var Input []byte
 
-func Run(input []byte) (*util.Result, error) {
-	start := time.Now()
-
+func parseInput(input []byte) ([]*game, error) {
 	lines := util.ParseInputLines(input)
 	games := make([]*game, 0, len(lines))
 	var setLine []byte
@@ -48,16 +46,26 @@ func Run(input []byte) (*util.Result, error) {
 				count := util.Btoi(cubeLine[:si])
 				color := cubeLine[si+1:]
 				if bytes.Equal(color, []byte("red")) {
-					s.redCount = count
+					s.red = count
 				} else if bytes.Equal(color, []byte("green")) {
-					s.greenCount = count
+					s.green = count
 				} else if bytes.Equal(color, []byte("blue")) {
-					s.blueCount = count
+					s.blue = count
 				} else {
 					return nil, errors.New(fmt.Sprintf("Unknown color %s", color))
 				}
 			}
 		}
+	}
+	return games, nil
+}
+
+func Run(input []byte) (*util.Result, error) {
+	start := time.Now()
+
+	games, err := parseInput(input)
+	if err != nil {
+		return nil, err
 	}
 
 	parse := time.Now()
@@ -67,7 +75,7 @@ func Run(input []byte) (*util.Result, error) {
 	for _, g := range games {
 		impossible := false
 		for _, s := range g.sets {
-			if s.redCount > 12 || s.greenCount > 13 || s.blueCount > 14 {
+			if s.red > 12 || s.green > 13 || s.blue > 14 {
 				impossible = true
 				break
 			}
@@ -80,9 +88,9 @@ func Run(input []byte) (*util.Result, error) {
 		maxGreen := 0
 		maxBlue := 0
 		for _, s := range g.sets {
-			maxRed = max(maxRed, s.redCount)
-			maxGreen = max(maxGreen, s.greenCount)
-			maxBlue = max(maxBlue, s.blueCount)
+			maxRed = max(maxRed, s.red)
+			maxGreen = max(maxGreen, s.green)
+			maxBlue = max(maxBlue, s.blue)
 		}
 		part2 += maxRed * maxGreen * maxBlue
 	}
