@@ -16,9 +16,7 @@ type card struct {
 //go:embed input.txt
 var Input []byte
 
-func Run(input []byte) (*util.Result, error) {
-	start := time.Now()
-
+func parseInput(input []byte) []*card {
 	lines := util.ParseInputLines(input)
 	cards := make([]*card, 0, len(lines))
 	for _, line := range lines {
@@ -39,6 +37,13 @@ func Run(input []byte) (*util.Result, error) {
 		}
 		cards = append(cards, c)
 	}
+	return cards
+}
+
+func Run(input []byte) (*util.Result, error) {
+	start := time.Now()
+
+	cards := parseInput(input)
 
 	parse := time.Now()
 
