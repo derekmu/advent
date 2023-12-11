@@ -28,7 +28,7 @@ func TestRunSample1(t *testing.T) {
 	if result.Part1 != 374 {
 		t.Fatalf("incorrect part 1, expected 374, got %d", result.Part1)
 	}
-	if result.Part2 != -1 {
+	if result.Part2 != 82000210 {
 		t.Fatal("incorrect part 2")
 	}
 }
@@ -41,7 +41,7 @@ func TestRun(t *testing.T) {
 	if result.Part1 != 10154062 {
 		t.Fatal("incorrect part 1")
 	}
-	if result.Part2 != -1 {
+	if result.Part2 != 553083047914 {
 		t.Fatal("incorrect part 2")
 	}
 }
