@@ -18,25 +18,23 @@ var Input []byte
 
 func parseInput(input []byte) (galaxies []galaxy) {
 	lines := util.ParseInputLines(input)
-	galaxyCols := make(map[int]bool, 133)
-	galaxyRows := make(map[int]bool, 132)
-	galaxyCount := 0
+	galaxyRows := make([]bool, len(lines))
+	galaxyCols := make([]bool, len(lines[0]))
+	galaxies = make([]galaxy, 0, 451)
 	for row, line := range lines {
 		for col, c := range line {
 			if c == '#' {
-				galaxyCount++
 				galaxyCols[col] = true
 				galaxyRows[row] = true
 			}
 		}
 	}
-	galaxies = make([]galaxy, 0, galaxyCount)
 	r1 := 0
 	c1 := 0
 	r2 := 0
 	c2 := 0
 	for row, line := range lines {
-		if _, ok := galaxyRows[row]; !ok {
+		if !galaxyRows[row] {
 			r1 += 2
 			r2 += 1_000_000
 		} else {
@@ -46,7 +44,7 @@ func parseInput(input []byte) (galaxies []galaxy) {
 				if c == '#' {
 					galaxies = append(galaxies, galaxy{r1, c1, r2, c2})
 				}
-				if _, ok := galaxyCols[col]; !ok {
+				if !galaxyCols[col] {
 					c1 += 2
 					c2 += 1_000_000
 				} else {
@@ -70,10 +68,13 @@ func Run(input []byte) (*util.Result, error) {
 
 	part1 := 0
 	part2 := 0
+	var g1, g2 galaxy
 	for gi := 0; gi < len(galaxies)-1; gi++ {
+		g1 = galaxies[gi]
 		for gj := gi + 1; gj < len(galaxies); gj++ {
-			dr := galaxies[gj].row1 - galaxies[gi].row1
-			dc := galaxies[gj].col1 - galaxies[gi].col1
+			g2 = galaxies[gj]
+			dr := g2.row1 - g1.row1
+			dc := g2.col1 - g1.col1
 			if dr < 0 {
 				dr = -dr
 			}
@@ -81,8 +82,8 @@ func Run(input []byte) (*util.Result, error) {
 				dc = -dc
 			}
 			part1 += dr + dc
-			dr = galaxies[gj].row2 - galaxies[gi].row2
-			dc = galaxies[gj].col2 - galaxies[gi].col2
+			dr = g2.row2 - g1.row2
+			dc = g2.col2 - g1.col2
 			if dr < 0 {
 				dr = -dr
 			}
