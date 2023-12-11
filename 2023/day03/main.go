@@ -21,9 +21,7 @@ type index struct {
 //go:embed input.txt
 var Input []byte
 
-func Run(input []byte) (*util.Result, error) {
-	start := time.Now()
-
+func parseInput(input []byte) ([][]byte, []*number, map[index][]int) {
 	lines := util.ParseInputLines(input)
 	numbers := make([]*number, 0, 1207)
 	gearMap := make(map[index][]int, 368)
@@ -47,6 +45,13 @@ func Run(input []byte) (*util.Result, error) {
 			}
 		}
 	}
+	return lines, numbers, gearMap
+}
+
+func Run(input []byte) (*util.Result, error) {
+	start := time.Now()
+
+	lines, numbers, gearMap := parseInput(input)
 
 	parse := time.Now()
 
