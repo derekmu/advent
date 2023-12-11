@@ -24,11 +24,13 @@ import (
 	day2308 "advent/2023/day08"
 	day2309 "advent/2023/day09"
 	day2310 "advent/2023/day10"
+	day2311 "advent/2023/day11"
 	"advent/util"
 	"context"
-	"github.com/urfave/cli/v3"
 	"log"
 	"os"
+
+	"github.com/urfave/cli/v3"
 )
 
 type problem struct {
@@ -64,6 +66,7 @@ var problems = []problem{
 	{year: "2023", day: "08", runner: day2308.Run, input: day2308.Input},
 	{year: "2023", day: "09", runner: day2309.Run, input: day2309.Input},
 	{year: "2023", day: "10", runner: day2310.Run, input: day2310.Input},
+	{year: "2023", day: "11", runner: day2311.Run, input: day2311.Input},
 }
 
 func main() {
@@ -84,7 +87,7 @@ func main() {
 		Usage:           "Run Advent of Code problems",
 		HideHelpCommand: true,
 		Commands:        yearCommands,
-		Action: func(ctx context.Context, cmd *cli.Command) error {
+		Action: func(_ context.Context, _ *cli.Command) error {
 			var results []*util.Result
 			for _, p := range problems {
 				result, err := p.runner(p.input)
@@ -108,7 +111,7 @@ func main() {
 func makeYearCommand(year string) *cli.Command {
 	return &cli.Command{
 		Name: year,
-		Action: func(ctx context.Context, cmd *cli.Command) error {
+		Action: func(_ context.Context, _ *cli.Command) error {
 			var results []*util.Result
 			for _, p := range problems {
 				if p.year == year {
@@ -130,7 +133,7 @@ func makeYearCommand(year string) *cli.Command {
 func makeProblemCommand(p problem) *cli.Command {
 	return &cli.Command{
 		Name: p.day,
-		Action: func(ctx context.Context, cmd *cli.Command) error {
+		Action: func(_ context.Context, _ *cli.Command) error {
 			result, err := p.runner(p.input)
 			if err != nil {
 				return err
