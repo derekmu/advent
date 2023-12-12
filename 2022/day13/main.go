@@ -95,24 +95,19 @@ func compare(ln *node, rn *node) int {
 func parseNode(bytes []byte) *node {
 	root := &node{}
 	current := root
-	i := 1
-	for i < len(bytes)-1 {
+	for i := 1; i < len(bytes)-1; i++ {
 		c := bytes[i]
-		if c == '[' {
+		switch {
+		case c == '[':
 			neww := &node{parent: current}
 			current.list = append(current.list, neww)
 			current = neww
-		} else if c == ']' {
+		case c == ']':
 			current = current.parent
-		} else if isDigit(c) {
+		case c >= '0' && c <= ':':
 			current.list = append(current.list, &node{value: c})
-		} else if c == ',' {
+		default:
 		}
-		i++
 	}
 	return root
-}
-
-func isDigit(c byte) bool {
-	return c >= '0' && c <= ':'
 }

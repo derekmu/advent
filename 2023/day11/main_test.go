@@ -1,54 +1,29 @@
 package day09
 
 import (
+	"advent/util/tutil"
+	_ "embed"
 	"testing"
 )
 
-var sampleInput = []byte(`...#......
-.......#..
-#.........
-..........
-......#...
-.#........
-.........#
-..........
-.......#..
-#...#.....
-`)
+//go:embed sample.txt
+var sampleInput []byte
 
-func TestParseInput(t *testing.T) {
-	parseInput(sampleInput)
-}
+const (
+	samplePart1 = 374
+	samplePart2 = 82000210
+	part1       = 10154062
+	part2       = 553083047914
+)
 
-func TestRunSample1(t *testing.T) {
-	result, err := Run(sampleInput)
-	if err != nil {
-		t.Fatal("unexpected error")
-	}
-	if result.Part1 != 374 {
-		t.Fatalf("incorrect part 1, expected 374, got %d", result.Part1)
-	}
-	if result.Part2 != 82000210 {
-		t.Fatal("incorrect part 2")
-	}
+func TestRunSample(t *testing.T) {
+	tutil.RunInput(t, Run, sampleInput, samplePart1, samplePart2)
 }
 
 func TestRun(t *testing.T) {
-	result, err := Run(Input)
-	if err != nil {
-		t.Fatal("unexpected error")
-	}
-	if result.Part1 != 10154062 {
-		t.Fatal("incorrect part 1")
-	}
-	if result.Part2 != 553083047914 {
-		t.Fatal("incorrect part 2")
-	}
+	tutil.RunInput(t, Run, Input, part1, part2)
 }
 
 func BenchmarkRun(b *testing.B) {
-	for i := 0; i < b.N; i++ {
-		result, err := Run(Input)
-		_, _ = result, err
-	}
+	tutil.BenchInput(b, Run, Input, part1, part2)
 }

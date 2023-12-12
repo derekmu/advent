@@ -1,17 +1,33 @@
-package day01
+package day13
 
 import (
 	"testing"
 )
 
 var (
-	sampleInput = []byte(`two1nine
-eightwo6three
-abcone2threexyz
-xtwone3four
-4nineeightseven2
-zoneight234
-7pqrstsixteen
+	sampleInput = []byte(`[1,1,3,1,1]
+[1,1,5,1,1]
+
+[[1],[2,3,4]]
+[[1],4]
+
+[9]
+[[8,7,6]]
+
+[[4,4],4,4]
+[[4,4],4,4,4]
+
+[7,7,7,7]
+[7,7,7]
+
+[]
+[3]
+
+[[[]]]
+[[]]
+
+[1,[2,[3,[4,[5,6,7]]]],8,9]
+[1,[2,[3,[4,[5,6,0]]]],8,9]
 `)
 )
 
@@ -21,10 +37,10 @@ func TestRunSample(t *testing.T) {
 	if err != nil {
 		t.Fatal("unexpected error")
 	}
-	if result.Part1 != 275 {
+	if result.Part1 != 13 {
 		t.Fatal("incorrect part 1")
 	}
-	if result.Part2 != 281 {
+	if result.Part2 != 140 {
 		t.Fatal("incorrect part 2")
 	}
 }
@@ -35,10 +51,10 @@ func TestRun(t *testing.T) {
 	if err != nil {
 		t.Fatal("unexpected error")
 	}
-	if result.Part1 != 56397 {
+	if result.Part1 != 5825 {
 		t.Fatal("incorrect part 1")
 	}
-	if result.Part2 != 55701 {
+	if result.Part2 != 24477 {
 		t.Fatal("incorrect part 2")
 	}
 }
