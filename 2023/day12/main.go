@@ -12,9 +12,34 @@ type spring struct {
 	counts []int
 }
 
-type index struct {
-	si int
-	ci int
+type cacher struct {
+	cache [][]int
+	maxCi int
+}
+
+func (c *cacher) clear() {
+	for _, row := range c.cache {
+		for i := 0; i < len(row); i++ {
+			row[i] = -1
+		}
+	}
+}
+
+func (c *cacher) value(si, ci int) int {
+	if si < len(c.cache) && ci < len(c.cache[si]) {
+		return c.cache[si][ci]
+	}
+	return -1
+}
+
+func (c *cacher) set(si, ci int, v int) {
+	for si >= len(c.cache) {
+		c.cache = append(c.cache, make([]int, 0, c.maxCi))
+	}
+	for ci >= len(c.cache[si]) {
+		c.cache[si] = append(c.cache[si], -1)
+	}
+	c.cache[si][ci] = v
 }
 
 //go:embed input.txt
@@ -42,14 +67,22 @@ func Run(input []byte) (*util.Result, error) {
 	start := time.Now()
 
 	springs := parseInput(input)
+	maxCi := 0
+	maxSi := 0
+	for _, s := range springs {
+		maxSi = max(maxSi, len(s.status)*6+4)
+		maxCi = max(maxCi, len(s.counts)*6)
+	}
 
 	parse := time.Now()
 
+	cache := &cacher{make([][]int, 0, maxSi), maxCi}
 	part1 := 0
 	part2 := 0
 	for _, s := range springs {
-		cache := make(map[index]int, len(s.status)*len(s.counts))
+		cache.clear()
 		part1 += countWays(s.status, 0, s.counts, 0, cache)
+
 		status := make([]byte, len(s.status)*5+4)
 		for i, v := range s.status {
 			for j := 0; j < 5; j++ {
@@ -65,7 +98,7 @@ func Run(input []byte) (*util.Result, error) {
 				counts[i+j*len(s.counts)] = v
 			}
 		}
-		cache = make(map[index]int, len(status)*len(counts))
+		cache.clear()
 		part2 += countWays(status, 0, counts, 0, cache)
 	}
 
@@ -80,30 +113,30 @@ func Run(input []byte) (*util.Result, error) {
 	}, nil
 }
 
-func countWays(status []byte, si int, counts []int, ci int, cache map[index]int) int {
-	if v, ok := cache[index{si, ci}]; ok {
+func countWays(status []byte, si int, counts []int, ci int, cache *cacher) int {
+	if v := cache.value(si, ci); v >= 0 {
 		return v
 	}
 	if ci >= len(counts) {
-		for si := si; si < len(status); si++ {
-			if status[si] == '#' {
-				cache[index{si, ci}] = 0
+		for s2 := si; s2 < len(status); s2++ {
+			if status[s2] == '#' {
+				cache.set(si, ci, 0)
 				return 0
 			}
 		}
-		cache[index{si, ci}] = 1
+		cache.set(si, ci, 1)
 		return 1
 	}
 	minS := minSpace(counts, ci)
 	ways := 0
-	for si := si; si <= len(status)-minS; si++ {
-		if status[si] == '.' {
+	for s2 := si; s2 <= len(status)-minS; s2++ {
+		if status[s2] == '.' {
 			// can't start at a working spring
 			continue
 		}
-		se := si + counts[ci]
+		se := s2 + counts[ci]
 		if se < len(status) && status[se] == '#' {
-			if status[si] == '#' {
+			if status[s2] == '#' {
 				// can't pass a broken spring
 				break
 			} else {
@@ -111,7 +144,7 @@ func countWays(status []byte, si int, counts []int, ci int, cache map[index]int)
 				continue
 			}
 		}
-		sj := si + 1
+		sj := s2 + 1
 		for ; sj < se; sj++ {
 			if status[sj] == '.' {
 				// can't have a working spring in the lot
@@ -121,12 +154,12 @@ func countWays(status []byte, si int, counts []int, ci int, cache map[index]int)
 		if sj == se {
 			ways += countWays(status, se+1, counts, ci+1, cache)
 		}
-		if status[si] == '#' {
+		if status[s2] == '#' {
 			// can't pass a broken spring
 			break
 		}
 	}
-	cache[index{si, ci}] = ways
+	cache.set(si, ci, ways)
 	return ways
 }
 
