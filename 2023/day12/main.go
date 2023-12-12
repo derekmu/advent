@@ -12,6 +12,11 @@ type spring struct {
 	counts []int
 }
 
+type index struct {
+	si int
+	ci int
+}
+
 //go:embed input.txt
 var Input []byte
 
@@ -41,10 +46,28 @@ func Run(input []byte) (*util.Result, error) {
 	parse := time.Now()
 
 	part1 := 0
+	part2 := 0
 	for _, s := range springs {
-		part1 += countWays(s.status, s.counts)
+		cache := make(map[index]int, len(s.status)*len(s.counts))
+		part1 += countWays(s.status, 0, s.counts, 0, cache)
+		status := make([]byte, len(s.status)*5+4)
+		for i, v := range s.status {
+			for j := 0; j < 5; j++ {
+				status[i+j*len(s.status)+j] = v
+			}
+		}
+		for j := 1; j < 5; j++ {
+			status[len(s.status)*j+j-1] = '?'
+		}
+		counts := make([]int, len(s.counts)*5)
+		for i, v := range s.counts {
+			for j := 0; j < 5; j++ {
+				counts[i+j*len(s.counts)] = v
+			}
+		}
+		cache = make(map[index]int, len(status)*len(counts))
+		part2 += countWays(status, 0, counts, 0, cache)
 	}
-	part2 := -1
 
 	end := time.Now()
 
@@ -57,24 +80,28 @@ func Run(input []byte) (*util.Result, error) {
 	}, nil
 }
 
-func countWays(status []byte, counts []int) int {
-	if len(counts) == 0 {
-		for _, s := range status {
-			if s == '#' {
-				// haven't consumed all broken springs
+func countWays(status []byte, si int, counts []int, ci int, cache map[index]int) int {
+	if v, ok := cache[index{si, ci}]; ok {
+		return v
+	}
+	if ci >= len(counts) {
+		for si := si; si < len(status); si++ {
+			if status[si] == '#' {
+				cache[index{si, ci}] = 0
 				return 0
 			}
 		}
+		cache[index{si, ci}] = 1
 		return 1
 	}
-	minS := minSpace(counts)
+	minS := minSpace(counts, ci)
 	ways := 0
-	for si := 0; si <= len(status)-minS; si++ {
+	for si := si; si <= len(status)-minS; si++ {
 		if status[si] == '.' {
 			// can't start at a working spring
 			continue
 		}
-		se := si + counts[0]
+		se := si + counts[ci]
 		if se < len(status) && status[se] == '#' {
 			if status[si] == '#' {
 				// can't pass a broken spring
@@ -92,20 +119,21 @@ func countWays(status []byte, counts []int) int {
 			}
 		}
 		if sj == se {
-			ways += countWays(status[min(se+1, len(status)):], counts[1:])
+			ways += countWays(status, se+1, counts, ci+1, cache)
 		}
 		if status[si] == '#' {
 			// can't pass a broken spring
 			break
 		}
 	}
+	cache[index{si, ci}] = ways
 	return ways
 }
 
-func minSpace(counts []int) int {
+func minSpace(counts []int, ci int) int {
 	space := 0
-	for _, c := range counts {
-		space += c + 1
+	for c2 := ci; c2 < len(counts); c2++ {
+		space += counts[c2] + 1
 	}
 	return space - 1
 }
