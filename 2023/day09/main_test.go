@@ -1,67 +1,29 @@
 package day09
 
 import (
-	"slices"
+	"advent/util/tutil"
+	_ "embed"
 	"testing"
 )
 
-var (
-	sampleInput = []byte(`0 3 6 9 12 15
-1 3 6 10 15 21
-10 13 16 21 30 45
-`)
-	expectedSequences = [][]int{
-		{0, 0, 3, 6, 9, 12, 15},
-		{0, 1, 3, 6, 10, 15, 21},
-		{0, 10, 13, 16, 21, 30, 45},
-	}
+//go:embed sample.txt
+var sampleInput []byte
+
+const (
+	samplePart1 = 114
+	samplePart2 = 2
+	part1       = 1666172641
+	part2       = 933
 )
 
-func TestParseInput(t *testing.T) {
-	sequences := parseInput(sampleInput)
-
-	if len(sequences) != len(expectedSequences) {
-		t.Fatal("incorrect sequence count")
-	}
-	for i, s := range sequences {
-		es := expectedSequences[i]
-		if !slices.Equal(es, s) {
-			t.Fatal("incorrect sequence")
-		}
-	}
-}
-
 func TestRunSample(t *testing.T) {
-	result, err := Run(sampleInput)
-
-	if err != nil {
-		t.Fatal("unexpected error")
-	}
-	if result.Part1 != 114 {
-		t.Fatal("incorrect part 1")
-	}
-	if result.Part2 != 2 {
-		t.Fatal("incorrect part 2")
-	}
+	tutil.RunInput(t, Run, sampleInput, samplePart1, samplePart2)
 }
 
 func TestRun(t *testing.T) {
-	result, err := Run(Input)
-
-	if err != nil {
-		t.Fatal("unexpected error")
-	}
-	if result.Part1 != 1666172641 {
-		t.Fatal("incorrect part 1")
-	}
-	if result.Part2 != 933 {
-		t.Fatal("incorrect part 2")
-	}
+	tutil.RunInput(t, Run, Input, part1, part2)
 }
 
 func BenchmarkRun(b *testing.B) {
-	for i := 0; i < b.N; i++ {
-		result, err := Run(Input)
-		_, _ = result, err
-	}
+	tutil.BenchInput(b, Run, Input, part1, part2)
 }
