@@ -3,6 +3,7 @@ package template
 import (
 	"advent/util"
 	_ "embed"
+	"math/bits"
 	"time"
 )
 
@@ -59,40 +60,33 @@ func Run(input []byte) (*util.Result, error) {
 	parse := time.Now()
 
 	part1 := 0
+	part2 := 0
 	for _, rm := range rockMaps {
-		itsdone := false
 		for r := 0; r < len(rm.rows)-1; r++ {
-			itworks := true
+			ror := uint(0)
 			for rl, rr := r, r+1; rl >= 0 && rr < len(rm.rows); rl, rr = rl-1, rr+1 {
-				if rm.rows[rl] != rm.rows[rr] {
-					itworks = false
-					break
-				}
+				ror |= rm.rows[rl] ^ rm.rows[rr]
 			}
-			if itworks {
+			if ror == 0 {
 				part1 += (r + 1) * 100
-				itsdone = true
-				break
+			}
+			if bits.OnesCount(ror) == 1 {
+				part2 += (r + 1) * 100
 			}
 		}
-		if !itsdone {
-			for c := 0; c < len(rm.cols)-1; c++ {
-				itworks := true
-				for cl, cr := c, c+1; cl >= 0 && cr < len(rm.cols); cl, cr = cl-1, cr+1 {
-					if rm.cols[cl] != rm.cols[cr] {
-						itworks = false
-						break
-					}
-				}
-				if itworks {
-					part1 += c + 1
-					itsdone = true
-					break
-				}
+		for c := 0; c < len(rm.cols)-1; c++ {
+			cor := uint(0)
+			for rl, rr := c, c+1; rl >= 0 && rr < len(rm.cols); rl, rr = rl-1, rr+1 {
+				cor |= rm.cols[rl] ^ rm.cols[rr]
+			}
+			if cor == 0 {
+				part1 += c + 1
+			}
+			if bits.OnesCount(cor) == 1 {
+				part2 += c + 1
 			}
 		}
 	}
-	part2 := -1
 
 	end := time.Now()
 
