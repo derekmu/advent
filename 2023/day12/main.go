@@ -18,10 +18,8 @@ type cacher struct {
 }
 
 func (c *cacher) clear() {
-	for _, row := range c.cache {
-		for i := 0; i < len(row); i++ {
-			row[i] = -1
-		}
+	for i := range c.cache {
+		c.cache[i] = c.cache[i][:0]
 	}
 }
 
