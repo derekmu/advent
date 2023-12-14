@@ -19,8 +19,8 @@ func Run(input []byte) (*util.Result, error) {
 	maxCalories := [3]int{0, 0, 0}
 	calories := 0
 
-	for _, line := range lines {
-		if len(line) == 0 {
+	for i := 0; i <= len(lines); i++ {
+		if i == len(lines) || len(lines[i]) == 0 {
 			for i := 0; i < len(maxCalories); i++ {
 				if calories > maxCalories[i] {
 					for j := len(maxCalories) - 1; j > i; j-- {
@@ -32,7 +32,7 @@ func Run(input []byte) (*util.Result, error) {
 			}
 			calories = 0
 		} else {
-			calories += util.Btoi(line)
+			calories += util.Btoi(lines[i])
 		}
 	}
 

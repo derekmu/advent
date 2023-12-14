@@ -1,4 +1,4 @@
-package day11
+package day09
 
 import (
 	"advent/util/tutil"
@@ -10,10 +10,10 @@ import (
 var sampleInput []byte
 
 const (
-	samplePart1 = 10605
-	samplePart2 = 2713310158
-	part1       = 50830
-	part2       = 14399640002
+	samplePart1 = 13
+	samplePart2 = 1
+	part1       = 6209
+	part2       = 2460
 )
 
 func TestRunSample(t *testing.T) {

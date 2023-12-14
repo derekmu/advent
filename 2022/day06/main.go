@@ -16,9 +16,10 @@ func Run(input []byte) (*util.Result, error) {
 
 	parse := time.Now()
 
-	part1 := 0
-	part2 := 0
+	part1 := make([]int, 0, len(lines))
+	part2 := make([]int, 0, len(lines))
 
+	var p1, p2 int
 	for _, line := range lines {
 		chars4 := map[uint8]int{}
 		fin4 := false
@@ -26,12 +27,14 @@ func Run(input []byte) (*util.Result, error) {
 		fin14 := false
 		for i := 0; i < len(line) && (!fin4 || !fin14); i++ {
 			if !fin4 {
-				part1, fin4 = updateCharCountMap(chars4, 4, line, i)
+				p1, fin4 = updateCharCountMap(chars4, 4, line, i)
 			}
 			if !fin14 {
-				part2, fin14 = updateCharCountMap(chars14, 14, line, i)
+				p2, fin14 = updateCharCountMap(chars14, 14, line, i)
 			}
 		}
+		part1 = append(part1, p1)
+		part2 = append(part2, p2)
 	}
 
 	end := time.Now()

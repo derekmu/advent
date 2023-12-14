@@ -1,4 +1,4 @@
-package day11
+package day06
 
 import (
 	"advent/util/tutil"
@@ -9,11 +9,11 @@ import (
 //go:embed sample.txt
 var sampleInput []byte
 
-const (
-	samplePart1 = 10605
-	samplePart2 = 2713310158
-	part1       = 50830
-	part2       = 14399640002
+var (
+	samplePart1 = []int{7, 5, 6, 10, 11}
+	samplePart2 = []int{19, 23, 23, 29, 26}
+	part1       = []int{1850}
+	part2       = []int{2823}
 )
 
 func TestRunSample(t *testing.T) {

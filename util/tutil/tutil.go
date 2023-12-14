@@ -2,6 +2,7 @@ package tutil
 
 import (
 	"advent/util"
+	"reflect"
 	"testing"
 )
 
@@ -12,10 +13,10 @@ func RunInput(t testing.TB, run runner, input []byte, p1, p2 any) {
 	if err != nil {
 		t.Fatal("unexpected error")
 	}
-	if result.Part1 != p1 {
+	if !reflect.DeepEqual(result.Part1, p1) {
 		t.Fatalf("incorrect part 1, expected %v, got %v", p1, result.Part1)
 	}
-	if result.Part2 != p2 {
+	if !reflect.DeepEqual(result.Part2, p2) {
 		t.Fatalf("incorrect part 2, expected %v, got %v", p2, result.Part2)
 	}
 }
