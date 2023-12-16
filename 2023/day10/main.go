@@ -7,7 +7,7 @@ import (
 	"time"
 )
 
-type direction int
+type direction byte
 
 const (
 	none direction = iota

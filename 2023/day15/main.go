@@ -9,7 +9,7 @@ import (
 
 type lens struct {
 	label uint64
-	focal int
+	focal byte
 }
 
 //go:embed input.txt
@@ -44,7 +44,7 @@ func Run(input []byte) (*util.Result, error) {
 		} else {
 			label, focalChar, _ := bytes.Cut(line, []byte("="))
 			l2 := smash(label)
-			focal := int(focalChar[0] - '0')
+			focal := focalChar[0] - '0'
 			found := false
 			box := hash(label)
 			lenses := boxLenses[box]
@@ -70,7 +70,7 @@ func Run(input []byte) (*util.Result, error) {
 	maxCap := 0
 	for bi, lenses := range boxLenses {
 		for li, l := range lenses {
-			part2 += (bi + 1) * (li + 1) * l.focal
+			part2 += (bi + 1) * (li + 1) * int(l.focal)
 		}
 		if cap(lenses) > maxCap {
 			maxCap = cap(lenses)
