@@ -3,6 +3,8 @@ package day16
 import (
 	"advent/util"
 	_ "embed"
+	"runtime"
+	"sync"
 	"time"
 )
 
@@ -14,11 +16,6 @@ const (
 	down
 	left
 )
-
-type tile struct {
-	row int
-	col int
-}
 
 type beam struct {
 	row int
@@ -36,40 +33,59 @@ func Run(input []byte) (*util.Result, error) {
 
 	parse := time.Now()
 
-	part1 := energized(lines, beam{
-		row: 0,
-		col: -1,
-		dir: right,
-	})
-	part2 := -1
+	beams := make(chan beam, len(lines)*2+len(lines[0])*2)
 	for r := range lines {
-		e := energized(lines, beam{
+		beams <- beam{
 			row: r,
 			col: -1,
 			dir: right,
-		})
-		part2 = max(part2, e)
-		e = energized(lines, beam{
+		}
+		beams <- beam{
 			row: r,
 			col: len(lines[0]),
 			dir: left,
-		})
-		part2 = max(part2, e)
+		}
 	}
 	for c := range lines[0] {
-		e := energized(lines, beam{
+		beams <- beam{
 			row: -1,
 			col: c,
 			dir: down,
-		})
-		part2 = max(part2, e)
-		e = energized(lines, beam{
+		}
+		beams <- beam{
 			row: len(lines),
 			col: c,
 			dir: up,
-		})
-		part2 = max(part2, e)
+		}
 	}
+	close(beams)
+	part1 := -1
+	part2 := -1
+	var mux sync.Mutex
+	wg := sync.WaitGroup{}
+	routinesCount := runtime.NumCPU() * 3
+	wg.Add(routinesCount)
+	for i := 0; i < routinesCount; i++ {
+		go func() {
+			p1 := -1
+			innerMax := 0
+			for b := range beams {
+				e := energized(lines, b)
+				innerMax = max(innerMax, e)
+				if b == (beam{row: 0, col: -1, dir: right}) {
+					p1 = e
+				}
+			}
+			mux.Lock()
+			if p1 != -1 {
+				part1 = p1
+			}
+			part2 = max(part2, innerMax)
+			mux.Unlock()
+			wg.Done()
+		}()
+	}
+	wg.Wait()
 
 	end := time.Now()
 
@@ -83,10 +99,14 @@ func Run(input []byte) (*util.Result, error) {
 }
 
 func energized(lines [][]byte, b beam) int {
-	tileMap := make(map[tile]direction, len(lines)*len(lines[0]))
+	tileMap := make([][]direction, len(lines))
+	for i, line := range lines {
+		tileMap[i] = make([]direction, len(line))
+	}
 	var beams = []beam{b}
+	count := 0
 	for len(beams) > 0 {
-		b := beams[len(beams)-1]
+		b = beams[len(beams)-1]
 		beams = beams[:len(beams)-1]
 		for {
 			switch b.dir {
@@ -164,17 +184,17 @@ func energized(lines [][]byte, b beam) int {
 			default:
 				panic("unknown input character")
 			}
-			if mask, ok := tileMap[tile{row: b.row, col: b.col}]; ok {
-				if mask&b.dir != 0 {
-					// we've already travelled this tile in this direction
-					break
-				} else {
-					tileMap[tile{row: b.row, col: b.col}] = mask | b.dir
-				}
+			mask := tileMap[b.row][b.col]
+			if mask&b.dir != 0 {
+				// we've already travelled this tile in this direction
+				break
 			} else {
-				tileMap[tile{row: b.row, col: b.col}] = b.dir
+				if mask == 0 {
+					count++
+				}
+				tileMap[b.row][b.col] = mask | b.dir
 			}
 		}
 	}
-	return len(tileMap)
+	return count
 }
