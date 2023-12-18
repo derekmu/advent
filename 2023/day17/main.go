@@ -4,18 +4,10 @@ import (
 	"advent/util"
 	"container/heap"
 	_ "embed"
-	"math"
 	"time"
 )
 
 var Problem = util.Problem{Year: "2023", Day: "17", Runner: Run, Input: Input}
-
-type direction byte
-
-const (
-	vert direction = 0
-	hori           = 1
-)
 
 type edge struct {
 	heatLoss int
@@ -26,13 +18,12 @@ type node struct {
 	row      int
 	col      int
 	val      int
-	dir      direction
-	out      []edge
+	out1     []edge
+	out2     []edge
 	open     bool
 	closed   bool
 	heatLoss int
 	index    int
-	previous *node
 }
 
 type pqueue []*node
@@ -80,28 +71,18 @@ func Run(input []byte) (*util.Result, error) {
 		for col, ch := range line {
 			nodes[row][col] = [2]*node{
 				{
-					row:      row,
-					col:      col,
-					val:      int(ch - '0'),
-					dir:      vert,
-					out:      make([]edge, 0, 6),
-					open:     false,
-					closed:   false,
-					heatLoss: 0,
-					index:    -1,
-					previous: nil,
+					row:  row,
+					col:  col,
+					val:  int(ch - '0'),
+					out1: make([]edge, 0, 6),
+					out2: make([]edge, 0, 14),
 				},
 				{
-					row:      row,
-					col:      col,
-					val:      int(ch - '0'),
-					dir:      hori,
-					out:      make([]edge, 0, 6),
-					open:     false,
-					closed:   false,
-					heatLoss: 0,
-					index:    -1,
-					previous: nil,
+					row:  row,
+					col:  col,
+					val:  int(ch - '0'),
+					out1: make([]edge, 0, 6),
+					out2: make([]edge, 0, 14),
 				},
 			}
 		}
@@ -111,74 +92,72 @@ func Run(input []byte) (*util.Result, error) {
 			heatLoss := 0
 			nv := n[0]
 			nh := n[1]
-			for r := row - 1; r >= 0 && r > r-4; r-- {
+			for r := row - 1; r >= 0 && r > r-11; r-- {
 				heatLoss += nodes[r][col][0].val
-				nv.out = append(nv.out, edge{
-					heatLoss: heatLoss,
-					node:     nodes[r][col][1],
-				})
+				if r > row-4 {
+					nv.out1 = append(nv.out1, edge{
+						heatLoss: heatLoss,
+						node:     nodes[r][col][1],
+					})
+				} else {
+					nv.out2 = append(nv.out2, edge{
+						heatLoss: heatLoss,
+						node:     nodes[r][col][1],
+					})
+				}
 			}
 			heatLoss = 0
-			for r := row + 1; r < len(nodes) && r < row+4; r++ {
+			for r := row + 1; r < len(nodes) && r < row+11; r++ {
 				heatLoss += nodes[r][col][0].val
-				nv.out = append(nv.out, edge{
-					heatLoss: heatLoss,
-					node:     nodes[r][col][1],
-				})
+				if r < row+4 {
+					nv.out1 = append(nv.out1, edge{
+						heatLoss: heatLoss,
+						node:     nodes[r][col][1],
+					})
+				} else {
+					nv.out2 = append(nv.out2, edge{
+						heatLoss: heatLoss,
+						node:     nodes[r][col][1],
+					})
+				}
 			}
 			heatLoss = 0
-			for c := col - 1; c >= 0 && c > col-4; c-- {
+			for c := col - 1; c >= 0 && c > col-11; c-- {
 				heatLoss += nodes[row][c][0].val
-				nh.out = append(nh.out, edge{
-					heatLoss: heatLoss,
-					node:     nodes[row][c][0],
-				})
+				if c > col-4 {
+					nh.out1 = append(nh.out1, edge{
+						heatLoss: heatLoss,
+						node:     nodes[row][c][0],
+					})
+				} else {
+					nh.out2 = append(nh.out2, edge{
+						heatLoss: heatLoss,
+						node:     nodes[row][c][0],
+					})
+				}
 			}
 			heatLoss = 0
-			for c := col + 1; c < len(lineNodes) && c < col+4; c++ {
+			for c := col + 1; c < len(lineNodes) && c < col+11; c++ {
 				heatLoss += nodes[row][c][0].val
-				nh.out = append(nh.out, edge{
-					heatLoss: heatLoss,
-					node:     nodes[row][c][0],
-				})
+				if c < col+4 {
+					nh.out1 = append(nh.out1, edge{
+						heatLoss: heatLoss,
+						node:     nodes[row][c][0],
+					})
+				} else {
+					nh.out2 = append(nh.out2, edge{
+						heatLoss: heatLoss,
+						node:     nodes[row][c][0],
+					})
+				}
 			}
 		}
 	}
 
 	parse := time.Now()
 
-	part1 := math.MaxInt
-	openSet := make(pqueue, 0, len(lines)*len(lines[0]))
-	heap.Init(&openSet)
-	heap.Push(&openSet, nodes[0][0][0])
-	heap.Push(&openSet, nodes[0][0][1])
-	for openSet.Len() > 0 {
-		n := heap.Pop(&openSet).(*node)
-		n.open = false
-		n.closed = true
-		if n.row == len(lines)-1 && n.col == len(lines[0])-1 {
-			part1 = n.heatLoss
-			break
-		}
-		// add new open paths branching from this one
-		for _, e := range n.out {
-			heatLoss := n.heatLoss + e.heatLoss
-			if heatLoss < e.node.heatLoss {
-				if e.node.open {
-					heap.Remove(&openSet, e.node.index)
-				}
-				e.node.open = false
-				e.node.closed = false
-			}
-			if !e.node.open && !e.node.closed {
-				e.node.heatLoss = heatLoss
-				e.node.previous = n
-				e.node.open = true
-				heap.Push(&openSet, e.node)
-			}
-		}
-	}
-	part2 := -1
+	part1 := solve(nodes, false)
+	part2 := solve(nodes, true)
 
 	end := time.Now()
 
@@ -189,4 +168,50 @@ func Run(input []byte) (*util.Result, error) {
 		ParseTime: parse,
 		EndTime:   end,
 	}, nil
+}
+
+func solve(nodes [][][2]*node, part2 bool) int {
+	for row := range nodes {
+		for col := range nodes[row] {
+			for _, n := range nodes[row][col] {
+				n.open = false
+				n.closed = false
+				n.heatLoss = 0
+				n.index = -1
+			}
+		}
+	}
+	openSet := make(pqueue, 0, len(nodes)*len(nodes[0]))
+	heap.Init(&openSet)
+	heap.Push(&openSet, nodes[0][0][0])
+	heap.Push(&openSet, nodes[0][0][1])
+	for openSet.Len() > 0 {
+		n := heap.Pop(&openSet).(*node)
+		n.open = false
+		n.closed = true
+		if n.row == len(nodes)-1 && n.col == len(nodes[0])-1 {
+			return n.heatLoss
+		}
+		// add new open paths branching from this one
+		outs := n.out1
+		if part2 {
+			outs = n.out2
+		}
+		for _, e := range outs {
+			heatLoss := n.heatLoss + e.heatLoss
+			if heatLoss < e.node.heatLoss {
+				if e.node.open {
+					heap.Remove(&openSet, e.node.index)
+				}
+				e.node.open = false
+				e.node.closed = false
+			}
+			if !e.node.open && !e.node.closed {
+				e.node.heatLoss = heatLoss
+				e.node.open = true
+				heap.Push(&openSet, e.node)
+			}
+		}
+	}
+	panic("solution not found")
 }

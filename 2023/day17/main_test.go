@@ -11,9 +11,9 @@ var sampleInput []byte
 
 const (
 	samplePart1 = 102
-	samplePart2 = -1
+	samplePart2 = 94
 	part1       = 1110
-	part2       = -1
+	part2       = 1294
 )
 
 func TestRunSample(t *testing.T) {
