@@ -7,6 +7,13 @@ import (
 	"time"
 )
 
+type Problem struct {
+	Year   string
+	Day    string
+	Runner func([]byte) (*Result, error)
+	Input  []byte
+}
+
 type Result struct {
 	Year      string
 	Day       string

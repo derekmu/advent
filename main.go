@@ -30,6 +30,7 @@ import (
 	day2314 "advent/2023/day14"
 	day2315 "advent/2023/day15"
 	day2316 "advent/2023/day16"
+	day2317 "advent/2023/day17"
 	"advent/util"
 	"context"
 	"log"
@@ -38,55 +39,49 @@ import (
 	"github.com/urfave/cli/v3"
 )
 
-type problem struct {
-	year   string
-	day    string
-	runner func([]byte) (*util.Result, error)
-	input  []byte
-}
-
-var problems = []problem{
+var problems = []util.Problem{
 	// 2022
-	{year: "2022", day: "01", runner: day2201.Run, input: day2201.Input},
-	{year: "2022", day: "02", runner: day2202.Run, input: day2202.Input},
-	{year: "2022", day: "03", runner: day2203.Run, input: day2203.Input},
-	{year: "2022", day: "04", runner: day2204.Run, input: day2204.Input},
-	{year: "2022", day: "05", runner: day2205.Run, input: day2205.Input},
-	{year: "2022", day: "06", runner: day2206.Run, input: day2206.Input},
-	{year: "2022", day: "07", runner: day2207.Run, input: day2207.Input},
-	{year: "2022", day: "08", runner: day2208.Run, input: day2208.Input},
-	{year: "2022", day: "09", runner: day2209.Run, input: day2209.Input},
-	{year: "2022", day: "10", runner: day2210.Run, input: day2210.Input},
-	{year: "2022", day: "11", runner: day2211.Run, input: day2211.Input},
-	{year: "2022", day: "12", runner: day2212.Run, input: day2212.Input},
-	{year: "2022", day: "13", runner: day2213.Run, input: day2213.Input},
+	day2201.Problem,
+	{Year: "2022", Day: "02", Runner: day2202.Run, Input: day2202.Input},
+	{Year: "2022", Day: "03", Runner: day2203.Run, Input: day2203.Input},
+	{Year: "2022", Day: "04", Runner: day2204.Run, Input: day2204.Input},
+	{Year: "2022", Day: "05", Runner: day2205.Run, Input: day2205.Input},
+	{Year: "2022", Day: "06", Runner: day2206.Run, Input: day2206.Input},
+	{Year: "2022", Day: "07", Runner: day2207.Run, Input: day2207.Input},
+	{Year: "2022", Day: "08", Runner: day2208.Run, Input: day2208.Input},
+	{Year: "2022", Day: "09", Runner: day2209.Run, Input: day2209.Input},
+	{Year: "2022", Day: "10", Runner: day2210.Run, Input: day2210.Input},
+	{Year: "2022", Day: "11", Runner: day2211.Run, Input: day2211.Input},
+	{Year: "2022", Day: "12", Runner: day2212.Run, Input: day2212.Input},
+	{Year: "2022", Day: "13", Runner: day2213.Run, Input: day2213.Input},
 	// 2023
-	{year: "2023", day: "01", runner: day2301.Run, input: day2301.Input},
-	{year: "2023", day: "02", runner: day2302.Run, input: day2302.Input},
-	{year: "2023", day: "03", runner: day2303.Run, input: day2303.Input},
-	{year: "2023", day: "04", runner: day2304.Run, input: day2304.Input},
-	{year: "2023", day: "05", runner: day2305.Run, input: day2305.Input},
-	{year: "2023", day: "06", runner: day2306.Run, input: day2306.Input},
-	{year: "2023", day: "07", runner: day2307.Run, input: day2307.Input},
-	{year: "2023", day: "08", runner: day2308.Run, input: day2308.Input},
-	{year: "2023", day: "09", runner: day2309.Run, input: day2309.Input},
-	{year: "2023", day: "10", runner: day2310.Run, input: day2310.Input},
-	{year: "2023", day: "11", runner: day2311.Run, input: day2311.Input},
-	{year: "2023", day: "12", runner: day2312.Run, input: day2312.Input},
-	{year: "2023", day: "13", runner: day2313.Run, input: day2313.Input},
-	{year: "2023", day: "14", runner: day2314.Run, input: day2314.Input},
-	{year: "2023", day: "15", runner: day2315.Run, input: day2315.Input},
-	{year: "2023", day: "16", runner: day2316.Run, input: day2316.Input},
+	{Year: "2023", Day: "01", Runner: day2301.Run, Input: day2301.Input},
+	{Year: "2023", Day: "02", Runner: day2302.Run, Input: day2302.Input},
+	{Year: "2023", Day: "03", Runner: day2303.Run, Input: day2303.Input},
+	{Year: "2023", Day: "04", Runner: day2304.Run, Input: day2304.Input},
+	{Year: "2023", Day: "05", Runner: day2305.Run, Input: day2305.Input},
+	{Year: "2023", Day: "06", Runner: day2306.Run, Input: day2306.Input},
+	{Year: "2023", Day: "07", Runner: day2307.Run, Input: day2307.Input},
+	{Year: "2023", Day: "08", Runner: day2308.Run, Input: day2308.Input},
+	{Year: "2023", Day: "09", Runner: day2309.Run, Input: day2309.Input},
+	{Year: "2023", Day: "10", Runner: day2310.Run, Input: day2310.Input},
+	{Year: "2023", Day: "11", Runner: day2311.Run, Input: day2311.Input},
+	{Year: "2023", Day: "12", Runner: day2312.Run, Input: day2312.Input},
+	{Year: "2023", Day: "13", Runner: day2313.Run, Input: day2313.Input},
+	{Year: "2023", Day: "14", Runner: day2314.Run, Input: day2314.Input},
+	{Year: "2023", Day: "15", Runner: day2315.Run, Input: day2315.Input},
+	{Year: "2023", Day: "16", Runner: day2316.Run, Input: day2316.Input},
+	{Year: "2023", Day: "17", Runner: day2317.Run, Input: day2317.Input},
 }
 
 func main() {
 	var yearCommands []*cli.Command
 	yearMap := make(map[string]*cli.Command, 2)
 	for _, p := range problems {
-		yearCommand, ok := yearMap[p.year]
+		yearCommand, ok := yearMap[p.Year]
 		if !ok {
-			yearCommand = makeYearCommand(p.year)
-			yearMap[p.year] = yearCommand
+			yearCommand = makeYearCommand(p.Year)
+			yearMap[p.Year] = yearCommand
 			yearCommands = append(yearCommands, yearCommand)
 		}
 		yearCommand.Commands = append(yearCommand.Commands, makeProblemCommand(p))
@@ -100,12 +95,12 @@ func main() {
 		Action: func(_ context.Context, _ *cli.Command) error {
 			var results []*util.Result
 			for _, p := range problems {
-				result, err := p.runner(p.input)
+				result, err := p.Runner(p.Input)
 				if err != nil {
 					return err
 				}
-				result.Year = p.year
-				result.Day = p.day
+				result.Year = p.Year
+				result.Day = p.Day
 				results = append(results, result)
 			}
 			util.PrintResults(results...)
@@ -124,13 +119,13 @@ func makeYearCommand(year string) *cli.Command {
 		Action: func(_ context.Context, _ *cli.Command) error {
 			var results []*util.Result
 			for _, p := range problems {
-				if p.year == year {
-					result, err := p.runner(p.input)
+				if p.Year == year {
+					result, err := p.Runner(p.Input)
 					if err != nil {
 						return err
 					}
-					result.Year = p.year
-					result.Day = p.day
+					result.Year = p.Year
+					result.Day = p.Day
 					results = append(results, result)
 				}
 			}
@@ -140,16 +135,16 @@ func makeYearCommand(year string) *cli.Command {
 	}
 }
 
-func makeProblemCommand(p problem) *cli.Command {
+func makeProblemCommand(p util.Problem) *cli.Command {
 	return &cli.Command{
-		Name: p.day,
+		Name: p.Day,
 		Action: func(_ context.Context, _ *cli.Command) error {
-			result, err := p.runner(p.input)
+			result, err := p.Runner(p.Input)
 			if err != nil {
 				return err
 			}
-			result.Year = p.year
-			result.Day = p.day
+			result.Year = p.Year
+			result.Day = p.Day
 			util.PrintResults(result)
 			return nil
 		},
