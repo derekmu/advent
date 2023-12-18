@@ -9,6 +9,8 @@ import (
 	"time"
 )
 
+var Problem = util.Problem{Year: "2022", Day: "02", Runner: Run, Input: Input}
+
 var (
 	winsMap = map[string]string{
 		"rock":    "scissor",

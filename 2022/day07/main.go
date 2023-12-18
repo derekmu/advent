@@ -9,6 +9,8 @@ import (
 	"time"
 )
 
+var Problem = util.Problem{Year: "2022", Day: "07", Runner: Run, Input: Input}
+
 type file struct {
 	name string
 	size int

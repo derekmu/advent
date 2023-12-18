@@ -7,6 +7,8 @@ import (
 	"time"
 )
 
+var Problem = util.Problem{Year: "2022", Day: "09", Runner: Run, Input: Input}
+
 type move struct {
 	dir  byte
 	dist int

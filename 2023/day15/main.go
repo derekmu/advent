@@ -7,6 +7,8 @@ import (
 	"time"
 )
 
+var Problem = util.Problem{Year: "2023", Day: "15", Runner: Run, Input: Input}
+
 type lens struct {
 	label uint64
 	focal byte

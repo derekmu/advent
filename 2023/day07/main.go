@@ -9,6 +9,8 @@ import (
 	"time"
 )
 
+var Problem = util.Problem{Year: "2023", Day: "07", Runner: Run, Input: Input}
+
 type hand struct {
 	cards  []byte
 	bid    int

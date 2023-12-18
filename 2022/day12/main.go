@@ -7,6 +7,8 @@ import (
 	"time"
 )
 
+var Problem = util.Problem{Year: "2022", Day: "12", Runner: Run, Input: Input}
+
 type point struct {
 	row int
 	col int

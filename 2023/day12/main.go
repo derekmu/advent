@@ -7,6 +7,8 @@ import (
 	"time"
 )
 
+var Problem = util.Problem{Year: "2023", Day: "12", Runner: Run, Input: Input}
+
 type spring struct {
 	status []byte
 	counts []int

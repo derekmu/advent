@@ -6,6 +6,8 @@ import (
 	"time"
 )
 
+var Problem = util.Problem{Year: "2023", Day: "03", Runner: Run, Input: Input}
+
 type number struct {
 	row      int
 	start    int

@@ -8,6 +8,8 @@ import (
 	"time"
 )
 
+var Problem = util.Problem{Year: "2022", Day: "11", Runner: Run, Input: Input}
+
 type op struct {
 	name  byte
 	value int

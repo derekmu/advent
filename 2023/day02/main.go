@@ -9,6 +9,8 @@ import (
 	"time"
 )
 
+var Problem = util.Problem{Year: "2023", Day: "02", Runner: Run, Input: Input}
+
 type set struct {
 	red   int
 	green int

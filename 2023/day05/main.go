@@ -9,6 +9,8 @@ import (
 	"time"
 )
 
+var Problem = util.Problem{Year: "2023", Day: "05", Runner: Run, Input: Input}
+
 type ranger struct {
 	first int
 	last  int

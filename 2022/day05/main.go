@@ -7,6 +7,8 @@ import (
 	"time"
 )
 
+var Problem = util.Problem{Year: "2022", Day: "05", Runner: Run, Input: Input}
+
 //go:embed input.txt
 var Input []byte
 

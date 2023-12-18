@@ -8,6 +8,8 @@ import (
 	"time"
 )
 
+var Problem = util.Problem{Year: "2023", Day: "17", Runner: Run, Input: Input}
+
 type direction byte
 
 const (

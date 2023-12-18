@@ -8,6 +8,8 @@ import (
 	"time"
 )
 
+var Problem = util.Problem{Year: "2023", Day: "04", Runner: Run, Input: Input}
+
 type card struct {
 	matches int
 	copies  int

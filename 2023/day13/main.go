@@ -7,6 +7,8 @@ import (
 	"time"
 )
 
+var Problem = util.Problem{Year: "2023", Day: "13", Runner: Run, Input: Input}
+
 type rockMap struct {
 	rows []uint
 	cols []uint

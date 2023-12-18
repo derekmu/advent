@@ -7,6 +7,8 @@ import (
 	"time"
 )
 
+var Problem = util.Problem{Year: "2023", Day: "08", Runner: Run, Input: Input}
+
 type node struct {
 	left  uint32
 	right uint32

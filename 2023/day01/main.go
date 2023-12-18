@@ -7,6 +7,8 @@ import (
 	"time"
 )
 
+var Problem = util.Problem{Year: "2023", Day: "01", Runner: Run, Input: Input}
+
 var words = [][]byte{
 	[]byte("one"),
 	[]byte("two"),
