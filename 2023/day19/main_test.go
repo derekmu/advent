@@ -13,7 +13,7 @@ const (
 	samplePart1 = 19114
 	samplePart2 = 167409079868000
 	part1       = 377025
-	part2       = -1
+	part2       = 135506683246673
 )
 
 func TestRunSample(t *testing.T) {
