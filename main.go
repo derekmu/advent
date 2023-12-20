@@ -14,6 +14,7 @@ import (
 	day2211 "advent/2022/day11"
 	day2212 "advent/2022/day12"
 	day2213 "advent/2022/day13"
+	day2214 "advent/2022/day14"
 	day2301 "advent/2023/day01"
 	day2302 "advent/2023/day02"
 	day2303 "advent/2023/day03"
@@ -56,6 +57,7 @@ var problems = []util.Problem{
 	day2211.Problem,
 	day2212.Problem,
 	day2213.Problem,
+	day2214.Problem,
 	// 2023
 	day2301.Problem,
 	day2302.Problem,
