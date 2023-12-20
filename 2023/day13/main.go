@@ -7,15 +7,14 @@ import (
 	"time"
 )
 
+//go:embed input.txt
+var Input []byte
 var Problem = util.Problem{Year: "2023", Day: "13", Runner: Run, Input: Input}
 
 type rockMap struct {
 	rows []uint
 	cols []uint
 }
-
-//go:embed input.txt
-var Input []byte
 
 func parseInput(input []byte) (maps []*rockMap) {
 	lines := util.ParseInputLines(input)

@@ -7,6 +7,8 @@ import (
 	"time"
 )
 
+//go:embed input.txt
+var Input []byte
 var Problem = util.Problem{Year: "2022", Day: "12", Runner: Run, Input: Input}
 
 type point struct {
@@ -25,9 +27,6 @@ type pathNode struct {
 	point point
 	from  *pathNode
 }
-
-//go:embed input.txt
-var Input []byte
 
 func Run(input []byte) (*util.Result, error) {
 	start := time.Now()

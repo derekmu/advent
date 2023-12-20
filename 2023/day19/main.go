@@ -7,6 +7,10 @@ import (
 	"time"
 )
 
+//go:embed input.txt
+var Input []byte
+var Problem = util.Problem{Year: "2023", Day: "19", Runner: Run, Input: Input}
+
 type rule struct {
 	attr       byte
 	comp       byte
@@ -93,11 +97,6 @@ const (
 	acceptId = uint32('A')
 	rejectId = uint32('R')
 )
-
-var Problem = util.Problem{Year: "2023", Day: "19", Runner: Run, Input: Input}
-
-//go:embed input.txt
-var Input []byte
 
 func parseInput(input []byte) (workflows map[uint32]workflow, parts []part) {
 	lines := util.ParseInputLines(input)

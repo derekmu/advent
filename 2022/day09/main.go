@@ -7,6 +7,8 @@ import (
 	"time"
 )
 
+//go:embed input.txt
+var Input []byte
 var Problem = util.Problem{Year: "2022", Day: "09", Runner: Run, Input: Input}
 
 type move struct {
@@ -35,9 +37,6 @@ func (p *point) update(f *point) bool {
 	}
 	return false
 }
-
-//go:embed input.txt
-var Input []byte
 
 func Run(input []byte) (*util.Result, error) {
 	start := time.Now()

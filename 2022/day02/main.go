@@ -9,6 +9,8 @@ import (
 	"time"
 )
 
+//go:embed input.txt
+var Input []byte
 var Problem = util.Problem{Year: "2022", Day: "02", Runner: Run, Input: Input}
 
 var (
@@ -36,9 +38,6 @@ var (
 		"scissor": 3,
 	}
 )
-
-//go:embed input.txt
-var Input []byte
 
 func Run(input []byte) (*util.Result, error) {
 	start := time.Now()

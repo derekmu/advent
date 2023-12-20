@@ -7,10 +7,9 @@ import (
 	"time"
 )
 
-var Problem = util.Problem{Year: "2023", Day: "14", Runner: Run, Input: Input}
-
 //go:embed input.txt
 var Input []byte
+var Problem = util.Problem{Year: "2023", Day: "14", Runner: Run, Input: Input}
 
 func parseInput(input []byte) [][]byte {
 	input2 := make([]byte, len(input))

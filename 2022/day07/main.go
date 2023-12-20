@@ -9,6 +9,8 @@ import (
 	"time"
 )
 
+//go:embed input.txt
+var Input []byte
 var Problem = util.Problem{Year: "2022", Day: "07", Runner: Run, Input: Input}
 
 type file struct {
@@ -86,9 +88,6 @@ func (d *directory) getSmallestDirToDelete(minSize, haveSize int) int {
 	}
 	return haveSize
 }
-
-//go:embed input.txt
-var Input []byte
 
 func Run(input []byte) (*util.Result, error) {
 	start := time.Now()

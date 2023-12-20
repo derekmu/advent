@@ -7,6 +7,8 @@ import (
 	"time"
 )
 
+//go:embed input.txt
+var Input []byte
 var Problem = util.Problem{Year: "2023", Day: "10", Runner: Run, Input: Input}
 
 type direction byte
@@ -50,9 +52,6 @@ func (p pather) goDir(dir direction) pather {
 	p.steps++
 	return p
 }
-
-//go:embed input.txt
-var Input []byte
 
 func parseInput(input []byte) (lines [][]byte, starter pather) {
 	lines = util.ParseInputLines(input)

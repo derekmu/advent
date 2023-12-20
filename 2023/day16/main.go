@@ -8,6 +8,8 @@ import (
 	"time"
 )
 
+//go:embed input.txt
+var Input []byte
 var Problem = util.Problem{Year: "2023", Day: "16", Runner: Run, Input: Input}
 
 type direction byte
@@ -24,9 +26,6 @@ type beam struct {
 	col int
 	dir direction
 }
-
-//go:embed input.txt
-var Input []byte
 
 func Run(input []byte) (*util.Result, error) {
 	start := time.Now()

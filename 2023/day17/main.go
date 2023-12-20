@@ -7,6 +7,8 @@ import (
 	"time"
 )
 
+//go:embed input.txt
+var Input []byte
 var Problem = util.Problem{Year: "2023", Day: "17", Runner: Run, Input: Input}
 
 type edge struct {
@@ -57,9 +59,6 @@ func (q *pqueue) Pop() interface{} {
 	*q = old[0 : n-1]
 	return no
 }
-
-//go:embed input.txt
-var Input []byte
 
 func Run(input []byte) (*util.Result, error) {
 	start := time.Now()

@@ -9,6 +9,8 @@ import (
 	"time"
 )
 
+//go:embed input.txt
+var Input []byte
 var Problem = util.Problem{Year: "2023", Day: "07", Runner: Run, Input: Input}
 
 type hand struct {
@@ -43,9 +45,6 @@ const (
 	onePair   = 5
 	bupkis    = 4
 )
-
-//go:embed input.txt
-var Input []byte
 
 func parseInput(input []byte) (hands []*hand) {
 	hands = make([]*hand, 0, 1000)

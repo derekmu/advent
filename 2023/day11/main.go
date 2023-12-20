@@ -6,6 +6,8 @@ import (
 	"time"
 )
 
+//go:embed input.txt
+var Input []byte
 var Problem = util.Problem{Year: "2023", Day: "11", Runner: Run, Input: Input}
 
 type galaxy struct {
@@ -14,9 +16,6 @@ type galaxy struct {
 	row2 int
 	col2 int
 }
-
-//go:embed input.txt
-var Input []byte
 
 func parseInput(input []byte) (galaxies []galaxy) {
 	lines := util.ParseInputLines(input)

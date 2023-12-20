@@ -8,15 +8,14 @@ import (
 	"time"
 )
 
+//go:embed input.txt
+var Input []byte
 var Problem = util.Problem{Year: "2023", Day: "04", Runner: Run, Input: Input}
 
 type card struct {
 	matches int
 	copies  int
 }
-
-//go:embed input.txt
-var Input []byte
 
 func parseInput(input []byte) []*card {
 	lines := util.ParseInputLines(input)

@@ -8,6 +8,10 @@ import (
 	"time"
 )
 
+//go:embed input.txt
+var Input []byte
+var Problem = util.Problem{Year: "2023", Day: "18", Runner: Run, Input: Input}
+
 var (
 	dirDiffMap = map[byte]image.Point{
 		'U': {Y: -1},
@@ -16,11 +20,6 @@ var (
 		'L': {X: -1},
 	}
 )
-
-var Problem = util.Problem{Year: "2023", Day: "18", Runner: Run, Input: Input}
-
-//go:embed input.txt
-var Input []byte
 
 func parseInput(input []byte) (poly1 []image.Point, moves1 int, poly2 []image.Point, moves2 int) {
 	lines := util.ParseInputLines(input)

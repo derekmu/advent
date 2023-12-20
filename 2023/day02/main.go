@@ -9,6 +9,8 @@ import (
 	"time"
 )
 
+//go:embed input.txt
+var Input []byte
 var Problem = util.Problem{Year: "2023", Day: "02", Runner: Run, Input: Input}
 
 type set struct {
@@ -21,9 +23,6 @@ type game struct {
 	gameId int
 	sets   []*set
 }
-
-//go:embed input.txt
-var Input []byte
 
 func parseInput(input []byte) ([]*game, error) {
 	lines := util.ParseInputLines(input)

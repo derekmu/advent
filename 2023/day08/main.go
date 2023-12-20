@@ -7,6 +7,8 @@ import (
 	"time"
 )
 
+//go:embed input.txt
+var Input []byte
 var Problem = util.Problem{Year: "2023", Day: "08", Runner: Run, Input: Input}
 
 type node struct {
@@ -18,9 +20,6 @@ var (
 	origin      = stoui("AAA")
 	destination = stoui("ZZZ")
 )
-
-//go:embed input.txt
-var Input []byte
 
 func parseInput(input []byte) (moves []byte, nodeMap map[uint32]*node) {
 	lines := util.ParseInputLines(input)

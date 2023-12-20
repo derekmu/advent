@@ -7,15 +7,14 @@ import (
 	"time"
 )
 
+//go:embed input.txt
+var Input []byte
 var Problem = util.Problem{Year: "2023", Day: "15", Runner: Run, Input: Input}
 
 type lens struct {
 	label uint64
 	focal byte
 }
-
-//go:embed input.txt
-var Input []byte
 
 func Run(input []byte) (*util.Result, error) {
 	start := time.Now()

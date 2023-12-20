@@ -9,6 +9,8 @@ import (
 	"time"
 )
 
+//go:embed input.txt
+var Input []byte
 var Problem = util.Problem{Year: "2023", Day: "05", Runner: Run, Input: Input}
 
 type ranger struct {
@@ -23,9 +25,6 @@ type rangeMap struct {
 }
 
 type mapper []rangeMap
-
-//go:embed input.txt
-var Input []byte
 
 func parseInput(input []byte) ([]int, []mapper) {
 	lines := util.ParseInputLines(input)

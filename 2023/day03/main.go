@@ -6,6 +6,8 @@ import (
 	"time"
 )
 
+//go:embed input.txt
+var Input []byte
 var Problem = util.Problem{Year: "2023", Day: "03", Runner: Run, Input: Input}
 
 type number struct {
@@ -19,9 +21,6 @@ type index struct {
 	row int
 	col int
 }
-
-//go:embed input.txt
-var Input []byte
 
 func parseInput(input []byte) ([][]byte, []*number, map[index][]int) {
 	lines := util.ParseInputLines(input)

@@ -7,6 +7,8 @@ import (
 	"time"
 )
 
+//go:embed input.txt
+var Input []byte
 var Problem = util.Problem{Year: "2023", Day: "01", Runner: Run, Input: Input}
 
 var words = [][]byte{
@@ -20,9 +22,6 @@ var words = [][]byte{
 	[]byte("eight"),
 	[]byte("nine"),
 }
-
-//go:embed input.txt
-var Input []byte
 
 func Run(input []byte) (*util.Result, error) {
 	start := time.Now()

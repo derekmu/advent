@@ -7,6 +7,8 @@ import (
 	"time"
 )
 
+//go:embed input.txt
+var Input []byte
 var Problem = util.Problem{Year: "2023", Day: "12", Runner: Run, Input: Input}
 
 type spring struct {
@@ -41,9 +43,6 @@ func (c *cacher) set(si, ci int, v int) {
 	}
 	c.cache[si][ci] = v
 }
-
-//go:embed input.txt
-var Input []byte
 
 func parseInput(input []byte) (springs []*spring) {
 	lines := util.ParseInputLines(input)

@@ -7,6 +7,8 @@ import (
 	"time"
 )
 
+//go:embed input.txt
+var Input []byte
 var Problem = util.Problem{Year: "2022", Day: "13", Runner: Run, Input: Input}
 
 type node struct {
@@ -14,9 +16,6 @@ type node struct {
 	list   []*node
 	parent *node
 }
-
-//go:embed input.txt
-var Input []byte
 
 func Run(input []byte) (*util.Result, error) {
 	start := time.Now()
