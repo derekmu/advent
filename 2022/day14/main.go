@@ -4,6 +4,7 @@ import (
 	"advent/util"
 	"bytes"
 	_ "embed"
+	"fmt"
 	"time"
 )
 
@@ -78,7 +79,41 @@ func Run(input []byte) (*util.Result, error) {
 			part1++
 		}
 	}
-	part2 := -1
+	part2 := part1
+	for {
+		sand := point{500 - rs.minCol + 1, 0}
+		for sand.row <= rs.maxRow {
+			if m[sand.row+1][sand.col] == ' ' {
+				sand.row++
+			} else if sand.col > 0 && m[sand.row+1][sand.col-1] == ' ' {
+				sand.col--
+				sand.row++
+			} else if sand.col < rs.maxCol-rs.minCol+2 && m[sand.row+1][sand.col+1] == ' ' {
+				sand.col++
+				sand.row++
+			} else {
+				break
+			}
+		}
+		m[sand.row][sand.col] = 'O'
+		part2++
+		if sand.row == 0 {
+			break
+		}
+	}
+	//printMap(m)
+	leftSand := 0
+	rightSand := 0
+	for row := 0; row <= rs.maxRow+1; row++ {
+		if m[row][0] == 'O' {
+			part2 += leftSand
+			leftSand++
+		}
+		if m[row][rs.maxCol-rs.minCol+2] == 'O' {
+			part2 += rightSand
+			rightSand++
+		}
+	}
 
 	end := time.Now()
 
@@ -91,8 +126,14 @@ func Run(input []byte) (*util.Result, error) {
 	}, nil
 }
 
+func printMap(m [][]byte) {
+	for _, row := range m {
+		fmt.Printf("%s\n", row)
+	}
+}
+
 func makeMap(rs rocks) [][]byte {
-	m := make([][]byte, rs.maxRow+1)
+	m := make([][]byte, rs.maxRow+2)
 	for row := range m {
 		m[row] = make([]byte, rs.maxCol-rs.minCol+3)
 		for i := range m[row] {
