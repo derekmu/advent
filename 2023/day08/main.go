@@ -78,7 +78,7 @@ func Run(input []byte) (*util.Result, error) {
 			steps = append(steps, step)
 		}
 	}
-	part2 := findLCM(steps)
+	part2 := util.FindLcm(steps)
 
 	end := time.Now()
 
@@ -97,23 +97,4 @@ func stoui(bytes string) uint32 {
 
 func b3toui(bytes []byte) uint32 {
 	return uint32(bytes[0])<<16 | uint32(bytes[1])<<8 | uint32(bytes[2])
-}
-
-func gcd(a, b int) int {
-	for b != 0 {
-		a, b = b, a%b
-	}
-	return a
-}
-
-func lcm(a, b int) int {
-	return a * b / gcd(a, b)
-}
-
-func findLCM(numbers []int) int {
-	result := numbers[0]
-	for i := 1; i < len(numbers); i++ {
-		result = lcm(result, numbers[i])
-	}
-	return result
 }
