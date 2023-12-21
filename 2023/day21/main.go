@@ -29,27 +29,43 @@ func Run(input []byte) (*util.Result, error) {
 
 	parse := time.Now()
 
-	height := len(lines)
-	width := len(lines[0])
-	startPoint := point{}
-out:
+	part1 := calculatePart1(lines)
+	part2 := -1
+
+	end := time.Now()
+
+	return &util.Result{
+		Part1:     part1,
+		Part2:     part2,
+		StartTime: start,
+		ParseTime: parse,
+		EndTime:   end,
+	}, nil
+}
+
+func findStartPoint(lines [][]byte) point {
 	for row, line := range lines {
 		for col, ch := range line {
 			if ch == 'S' {
-				startPoint = point{
+				return point{
 					row: row,
 					col: col,
 				}
-				break out
 			}
 		}
 	}
+	panic("start point not found")
+}
+
+func calculatePart1(lines [][]byte) int {
+	height := len(lines)
+	width := len(lines[0])
 	visited := make([][]bool, height)
 	for row := range lines {
 		visited[row] = make([]bool, width)
 	}
 	curPoints := make([]point, 0, height*width)
-	curPoints = append(curPoints, startPoint)
+	curPoints = append(curPoints, findStartPoint(lines))
 	nextPoints := make([]point, 0, height*width)
 	for step := 0; step < 64; step++ {
 		for _, p := range curPoints {
@@ -66,17 +82,5 @@ out:
 		}
 		curPoints, nextPoints = nextPoints, curPoints[:0]
 	}
-	part1 := len(curPoints)
-
-	part2 := -1
-
-	end := time.Now()
-
-	return &util.Result{
-		Part1:     part1,
-		Part2:     part2,
-		StartTime: start,
-		ParseTime: parse,
-		EndTime:   end,
-	}, nil
+	return len(curPoints)
 }
