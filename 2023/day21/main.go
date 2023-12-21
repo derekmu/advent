@@ -29,7 +29,8 @@ func Run(input []byte) (*util.Result, error) {
 
 	parse := time.Now()
 
-	part1 := -1
+	height := len(lines)
+	width := len(lines[0])
 	startPoint := point{}
 out:
 	for row, line := range lines {
@@ -43,29 +44,30 @@ out:
 			}
 		}
 	}
-	visited := make([][]bool, len(lines))
-	for row := range visited {
-		visited[row] = make([]bool, len(lines[0]))
+	visited := make([][]bool, height)
+	for row := range lines {
+		visited[row] = make([]bool, width)
 	}
-	curPoints := make([]point, 0, len(lines)*len(lines[1]))
+	curPoints := make([]point, 0, height*width)
 	curPoints = append(curPoints, startPoint)
-	nextPoints := make([]point, 0, len(lines)*len(lines[1]))
-	for i := 0; i < 64; i++ {
+	nextPoints := make([]point, 0, height*width)
+	for step := 0; step < 64; step++ {
 		for _, p := range curPoints {
 			for _, dir := range dirs {
 				np := point{row: p.row + dir.row, col: p.col + dir.col}
-				if np.row >= 0 && np.row < len(lines) && np.col >= 0 && np.col < len(lines[0]) && lines[np.row][np.col] != '#' && !visited[np.row][np.col] {
+				if np.row >= 0 && np.row < height && np.col >= 0 && np.col < width && lines[np.row][np.col] != '#' && !visited[np.row][np.col] {
 					nextPoints = append(nextPoints, np)
 					visited[np.row][np.col] = true
 				}
 			}
 		}
-		part1 = len(nextPoints)
 		for _, np := range nextPoints {
 			visited[np.row][np.col] = false
 		}
 		curPoints, nextPoints = nextPoints, curPoints[:0]
 	}
+	part1 := len(curPoints)
+
 	part2 := -1
 
 	end := time.Now()
