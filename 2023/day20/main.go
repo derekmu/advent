@@ -22,7 +22,6 @@ type pulse struct {
 	fromId uint32
 	toId   uint32
 	high   bool
-	next   *pulse
 }
 
 type module struct {
@@ -36,13 +35,13 @@ type module struct {
 	gfFlips map[uint32][]int
 }
 
-func (m *module) pulse(p, end *pulse, press int) *pulse {
-	output := p.high
+func (m *module) pulse(pulseQueue []pulse, press int) []pulse {
+	output := pulseQueue[0].high
 	switch m.mtype {
 	case '%':
-		if p.high {
+		if pulseQueue[0].high {
 			// If a flip-flop module receives a high pulse, it is ignored and nothing happens.
-			return end
+			return pulseQueue
 		} else {
 			// If a flip-flop module receives a low pulse, it flips between on and off.
 			// If it was off, it turns on and sends a high pulse.
@@ -58,34 +57,32 @@ func (m *module) pulse(p, end *pulse, press int) *pulse {
 					m.gfFlips[id] = []int{-1, -1}
 				}
 			}
-			if p.high {
-				for i, v := range m.gfFlips[p.fromId] {
+			if pulseQueue[0].high {
+				for i, v := range m.gfFlips[pulseQueue[0].fromId] {
 					if v == -1 {
-						m.gfFlips[p.fromId][i] = press
+						m.gfFlips[pulseQueue[0].fromId][i] = press
 						break
 					}
 				}
 			}
 		}
 		// When a pulse is received, the conjunction module first updates its memory for that input.
-		if p.high {
-			delete(m.inputs, p.fromId)
+		if pulseQueue[0].high {
+			delete(m.inputs, pulseQueue[0].fromId)
 		} else {
-			m.inputs[p.fromId] = false
+			m.inputs[pulseQueue[0].fromId] = false
 		}
 		// If it remembers high pulses for all inputs, it sends a low pulse; otherwise, it sends a high pulse.
 		output = len(m.inputs) > 0
 	}
 	for _, t := range m.targets {
-		end.next = &pulse{
+		pulseQueue = append(pulseQueue, pulse{
 			fromId: m.id,
 			toId:   t,
 			high:   output,
-			next:   nil,
-		}
-		end = end.next
+		})
 	}
-	return end
+	return pulseQueue
 }
 
 func parseInput(input []byte) (moduleMap map[uint32]*module) {
@@ -147,21 +144,21 @@ func Run(input []byte) (*util.Result, error) {
 			gfId = k
 		}
 	}
+	reuseQueue := make([]pulse, 0, 100)
 	for press := 0; press < 1000 || part2 == -1; press++ {
-		front := &pulse{fromId: buttonId, toId: broadcasterId, high: false}
-		back := front
-		for front != nil {
-			// log.Printf("%s - %t > %s", front.from, front.high, front.to)
+		pulseQueue := reuseQueue[:0]
+		pulseQueue = append(pulseQueue, pulse{fromId: buttonId, toId: broadcasterId, high: false})
+		for len(pulseQueue) > 0 {
 			if press < 1000 {
-				if front.high {
+				if pulseQueue[0].high {
 					high++
 				} else {
 					low++
 				}
 			}
-			if m, ok := moduleMap[front.toId]; ok {
-				back = m.pulse(front, back, press)
-				if front.toId == gfId {
+			if m, ok := moduleMap[pulseQueue[0].toId]; ok {
+				pulseQueue = m.pulse(pulseQueue, press)
+				if pulseQueue[0].toId == gfId {
 					allDone := true
 					for _, v := range m.gfFlips {
 						for _, v2 := range v {
@@ -182,7 +179,7 @@ func Run(input []byte) (*util.Result, error) {
 					}
 				}
 			}
-			front = front.next
+			pulseQueue = pulseQueue[1:]
 		}
 	}
 	part1 := low * high
