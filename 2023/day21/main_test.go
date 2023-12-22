@@ -21,11 +21,7 @@ func TestRunSample(t *testing.T) {
 }
 
 func TestRun(t *testing.T) {
-	p2 := part2
-	if !doPart2 {
-		p2 = -1
-	}
-	tutil.RunInput(t, Run, Input, part1, p2)
+	tutil.RunInput(t, Run, Input, part1, part2)
 }
 
 func BenchmarkRun(b *testing.B) {
