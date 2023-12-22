@@ -19,10 +19,11 @@ type point struct {
 }
 
 type brick struct {
-	min        point
-	max        point
-	supporting []*brick
-	supporters []*brick
+	min           point
+	max           point
+	supporting    []*brick
+	supporters    []*brick
+	disintegrated bool
 }
 
 func parseInput(input []byte) (bricks []*brick) {
@@ -52,6 +53,8 @@ func parseInput(input []byte) (bricks []*brick) {
 				y: max(y1i, y2i),
 				z: max(z1i, z2i),
 			},
+			supporters: make([]*brick, 0, 4),
+			supporting: make([]*brick, 0, 4),
 		}
 	}
 	return bricks
@@ -75,8 +78,6 @@ func Run(input []byte) (*util.Result, error) {
 	})
 	for i, b := range bricks {
 		nz := 1
-		b.supporters = make([]*brick, 0, 4)
-		b.supporting = make([]*brick, 0, 4)
 		for j := i - 1; j >= 0; j-- {
 			b2 := bricks[j]
 			if b.min.x <= b2.max.x && b.max.x >= b2.min.x && b.min.y <= b2.max.y && b.max.y >= b2.min.y {
@@ -98,19 +99,17 @@ func Run(input []byte) (*util.Result, error) {
 		}
 	}
 	part1 := 0
+	part2 := 0
 	for _, b := range bricks {
-		good := true
-		for _, sb := range b.supporting {
-			if len(sb.supporters) <= 1 {
-				good = false
-				break
-			}
-		}
-		if good {
+		fallers := disintegrate(b)
+		if fallers > 0 {
 			part1++
 		}
+		part2 += fallers
+		for _, b2 := range bricks {
+			b2.disintegrated = false
+		}
 	}
-	part2 := -1
 
 	end := time.Now()
 
@@ -121,4 +120,22 @@ func Run(input []byte) (*util.Result, error) {
 		ParseTime: parse,
 		EndTime:   end,
 	}, nil
+}
+
+func disintegrate(b *brick) int {
+	b.disintegrated = true
+	f := 0
+	for _, sb := range b.supporting {
+		good := false
+		for _, sb2 := range sb.supporters {
+			if !sb2.disintegrated {
+				good = true
+				break
+			}
+		}
+		if !good {
+			f += 1 + disintegrate(sb)
+		}
+	}
+	return f
 }
