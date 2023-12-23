@@ -45,7 +45,7 @@ func Run(input []byte) (*util.Result, error) {
 	}
 	part1 := -1
 	paths := make([]path, 0, 50)
-	paths = append(paths, path{stepCount: 0, row: 0, col: 1, visited: empty})
+	paths = append(paths, path{stepCount: 0, row: 0, col: 1, visited: copyVisited(empty)})
 	for len(paths) > 0 {
 		p := paths[len(paths)-1]
 		paths = paths[:len(paths)-1]
@@ -96,8 +96,36 @@ func Run(input []byte) (*util.Result, error) {
 			}
 		}
 	}
-
 	part2 := -1
+	paths = append(paths, path{stepCount: 0, row: 0, col: 1, visited: copyVisited(empty)})
+	for len(paths) > 0 {
+		p := paths[len(paths)-1]
+		paths = paths[:len(paths)-1]
+		moved := true
+		for moved {
+			moved = false
+			p.visited[p.row][p.col] = true
+			if p.row == height-1 && p.col == width-2 {
+				part2 = max(part2, p.stepCount)
+				break
+			}
+			op := p
+			for _, d := range dirs {
+				row := op.row + d.drow
+				col := op.col + d.dcol
+				if row >= 0 && row < height && col >= 0 && col < width && lines[row][col] != '#' && !p.visited[row][col] {
+					if moved {
+						paths = append(paths, path{stepCount: op.stepCount + 1, row: row, col: col, visited: copyVisited(p.visited)})
+					} else {
+						p.row = row
+						p.col = col
+						p.stepCount++
+						moved = true
+					}
+				}
+			}
+		}
+	}
 
 	end := time.Now()
 
