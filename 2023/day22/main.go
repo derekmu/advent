@@ -102,7 +102,7 @@ func Run(input []byte) (*util.Result, error) {
 	part2 := 0
 	for _, b := range bricks {
 		fallers := disintegrate(b)
-		if fallers > 0 {
+		if fallers == 0 {
 			part1++
 		}
 		part2 += fallers
