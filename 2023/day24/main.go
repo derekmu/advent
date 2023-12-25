@@ -4,6 +4,7 @@ import (
 	"advent/util"
 	"bytes"
 	_ "embed"
+	"slices"
 	"time"
 )
 
@@ -14,6 +15,10 @@ var Problem = util.Problem{Year: "2023", Day: "XX", Runner: Run, Input: Input}
 type stone struct {
 	x, y, z    float64
 	dx, dy, dz float64
+}
+
+type vector3 struct {
+	x, y, z float64
 }
 
 func parseInput(input []byte) (stones []stone, minint, maxint float64) {
@@ -56,6 +61,9 @@ func Run(input []byte) (*util.Result, error) {
 		for j := i + 1; j < len(stones); j++ {
 			s2 := stones[j]
 			det := s1.dx*s2.dy - s1.dy*s2.dx
+			if det == 0 {
+				continue
+			}
 
 			t := ((s2.x-s1.x)*s2.dy - (s2.y-s1.y)*s2.dx) / det
 			u := ((s2.x-s1.x)*s1.dy - (s2.y-s1.y)*s1.dx) / det
@@ -69,8 +77,53 @@ func Run(input []byte) (*util.Result, error) {
 			}
 		}
 	}
-	part2 := -1
 
+	var maybeX, maybeY, maybeZ []int
+	for i := 0; i < len(stones)-1; i++ {
+		for j := i + 1; j < len(stones); j++ {
+			a, b := stones[i], stones[j]
+			if a.dx == b.dx {
+				nextMaybe := findMatchingVel(int(b.x-a.x), int(a.dx))
+				if len(maybeX) == 0 {
+					maybeX = nextMaybe
+				} else {
+					maybeX = getIntersect(maybeX, nextMaybe)
+				}
+			}
+			if a.dy == b.dy {
+				nextMaybe := findMatchingVel(int(b.y-a.y), int(a.dy))
+				if len(maybeY) == 0 {
+					maybeY = nextMaybe
+				} else {
+					maybeY = getIntersect(maybeY, nextMaybe)
+				}
+			}
+			if a.dz == b.dz {
+				nextMaybe := findMatchingVel(int(b.z-a.z), int(a.dz))
+				if len(maybeZ) == 0 {
+					maybeZ = nextMaybe
+				} else {
+					maybeZ = getIntersect(maybeZ, nextMaybe)
+				}
+			}
+		}
+	}
+
+	part2 := -1
+	if len(maybeX) == len(maybeY) && len(maybeY) == len(maybeZ) && len(maybeZ) == 1 {
+		// only one possible velocity in all dimensions
+		rockVel := vector3{float64(maybeX[0]), float64(maybeY[0]), float64(maybeZ[0])}
+		hailStoneA, hailStoneB := stones[0], stones[1]
+		mA := (hailStoneA.dy - rockVel.y) / (hailStoneA.dx - rockVel.x)
+		mB := (hailStoneB.dy - rockVel.y) / (hailStoneB.dx - rockVel.x)
+		cA := hailStoneA.y - (mA * hailStoneA.x)
+		cB := hailStoneB.y - (mB * hailStoneB.x)
+		xPos := (cB - cA) / (mA - mB)
+		yPos := mA*xPos + cA
+		t := (xPos - hailStoneA.x) / (hailStoneA.dx - rockVel.x)
+		zPos := hailStoneA.z + (hailStoneA.dz-rockVel.z)*t
+		part2 = int(xPos + yPos + zPos)
+	}
 	end := time.Now()
 
 	return &util.Result{
@@ -80,4 +133,24 @@ func Run(input []byte) (*util.Result, error) {
 		ParseTime: parse,
 		EndTime:   end,
 	}, nil
+}
+
+func findMatchingVel(dvel, pv int) []int {
+	var match []int
+	for v := -1000; v < 1000; v++ {
+		if v != pv && dvel%(v-pv) == 0 {
+			match = append(match, v)
+		}
+	}
+	return match
+}
+
+func getIntersect(a, b []int) []int {
+	var result []int
+	for _, val := range a {
+		if slices.Contains(b, val) {
+			result = append(result, val)
+		}
+	}
+	return result
 }
