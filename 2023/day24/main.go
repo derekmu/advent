@@ -10,7 +10,7 @@ import (
 
 //go:embed input.txt
 var Input []byte
-var Problem = util.Problem{Year: "2023", Day: "XX", Runner: Run, Input: Input}
+var Problem = util.Problem{Year: "2023", Day: "24", Runner: Run, Input: Input}
 
 type stone struct {
 	x, y, z    float64
