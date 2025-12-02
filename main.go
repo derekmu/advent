@@ -40,6 +40,7 @@ import (
 	day2323 "advent/2023/day23"
 	day2324 "advent/2023/day24"
 	day2325 "advent/2023/day25"
+	day2501 "advent/2025/day01"
 	"advent/util"
 	"context"
 	"log"
@@ -90,11 +91,13 @@ var problems = []util.Problem{
 	day2323.Problem,
 	day2324.Problem,
 	day2325.Problem,
+	// 2025
+	day2501.Problem,
 }
 
 func main() {
 	var yearCommands []*cli.Command
-	yearMap := make(map[string]*cli.Command, 2)
+	yearMap := make(map[string]*cli.Command)
 	for _, p := range problems {
 		yearCommand, ok := yearMap[p.Year]
 		if !ok {
