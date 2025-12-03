@@ -34,7 +34,6 @@ func Run(input []byte) (*util.Result, error) {
 	start := time.Now()
 
 	spins := parseInput(input)
-	_ = spins
 
 	parse := time.Now()
 
