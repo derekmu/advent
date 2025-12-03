@@ -19,6 +19,12 @@ var (
 		'D': {Y: 1},
 		'L': {X: -1},
 	}
+	dirDiff2Map = map[byte]image.Point{
+		'0': {Y: -1},
+		'1': {X: 1},
+		'2': {Y: 1},
+		'3': {X: -1},
+	}
 )
 
 func parseInput(input []byte) (poly1 []image.Point, moves1 int, poly2 []image.Point, moves2 int) {
@@ -42,9 +48,8 @@ func parseInput(input []byte) (poly1 []image.Point, moves1 int, poly2 []image.Po
 		poly1 = append(poly1, cur1)
 		moves1 += count
 
-		count = util.HexBtoi(colorBytes[2:8])
-		count = count >> 4
-		diff = dirDiffMap[byte(count&0xF)]
+		count = util.HexBtoi(colorBytes[2:7])
+		diff = dirDiff2Map[colorBytes[7]]
 		cur2.Y += count * diff.Y
 		cur2.X += count * diff.X
 		poly2 = append(poly2, cur2)
