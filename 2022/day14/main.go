@@ -4,7 +4,6 @@ import (
 	"advent/util"
 	"bytes"
 	_ "embed"
-	"fmt"
 	"time"
 )
 
@@ -101,7 +100,6 @@ func Run(input []byte) (*util.Result, error) {
 			break
 		}
 	}
-	//printMap(m)
 	leftSand := 0
 	rightSand := 0
 	for row := 0; row <= rs.maxRow+1; row++ {
@@ -124,12 +122,6 @@ func Run(input []byte) (*util.Result, error) {
 		ParseTime: parse,
 		EndTime:   end,
 	}, nil
-}
-
-func printMap(m [][]byte) {
-	for _, row := range m {
-		fmt.Printf("%s\n", row)
-	}
 }
 
 func makeMap(rs rocks) [][]byte {

@@ -98,6 +98,8 @@ var problems = []util.Problem{
 }
 
 func main() {
+	log.SetFlags(log.Lshortfile | log.Ldate | log.Ltime)
+
 	var yearCommands []*cli.Command
 	yearMap := make(map[string]*cli.Command)
 	for _, p := range problems {
@@ -132,7 +134,7 @@ func main() {
 	}
 
 	if err := cmd.Run(context.Background(), os.Args); err != nil {
-		log.Fatal(err)
+		log.Panic(err)
 	}
 }
 
