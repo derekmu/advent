@@ -68,7 +68,7 @@ func Run(input []byte) (*util.Result, error) {
 }
 
 func invalidTest(id int) (bool, bool) {
-	l := digits(id)
+	l := util.Digits(id)
 	for repeats := 2; repeats <= l; repeats++ {
 		if l%repeats != 0 {
 			continue
@@ -76,9 +76,9 @@ func invalidTest(id int) (bool, bool) {
 		size := l / repeats
 		valid := false
 		for j := 0; j < size; j++ {
-			vj := (id / pow(10, j)) % 10
+			vj := (id / util.Pow(10, j)) % 10
 			for k := j + size; k < l; k += size {
-				vk := (id / pow(10, k)) % 10
+				vk := (id / util.Pow(10, k)) % 10
 				if vj != vk {
 					valid = true
 					break
@@ -90,26 +90,4 @@ func invalidTest(id int) (bool, bool) {
 		}
 	}
 	return false, false
-}
-
-func digits(id int) int {
-	l := 0
-	for tid := id; tid > 0; tid /= 10 {
-		l++
-	}
-	return l
-}
-
-func pow(n, m int) int {
-	if m == 0 {
-		return 1
-	}
-	if m == 1 {
-		return n
-	}
-	result := n
-	for i := 2; i <= m; i++ {
-		result *= n
-	}
-	return result
 }
