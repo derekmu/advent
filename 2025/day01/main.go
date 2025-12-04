@@ -10,13 +10,6 @@ import (
 var Input []byte
 var Problem = util.Problem{Year: "2025", Day: "01", Runner: Run, Input: Input}
 
-func abs(x int) int {
-	if x < 0 {
-		return -x
-	}
-	return x
-}
-
 func parseInput(input []byte) (spins []int) {
 	lines := util.ParseInputLines(input)
 	spins = make([]int, len(lines))
@@ -48,7 +41,7 @@ func Run(input []byte) (*util.Result, error) {
 			if before == 0 {
 				part2--
 			}
-			part2 += 1 + abs(current)/100
+			part2 += 1 + util.Abs(current)/100
 		} else if current > 99 {
 			part2 += current / 100
 		}

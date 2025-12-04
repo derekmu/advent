@@ -22,7 +22,7 @@ type point struct {
 }
 
 func (p *point) update(f *point) bool {
-	if abs(f.x-p.x) > 1 || abs(f.y-p.y) > 1 {
+	if util.Abs(f.x-p.x) > 1 || util.Abs(f.y-p.y) > 1 {
 		if f.x > p.x {
 			p.x += 1
 		} else if f.x < p.x {
@@ -98,13 +98,6 @@ func Run(input []byte) (*util.Result, error) {
 		ParseTime: parse,
 		EndTime:   end,
 	}, nil
-}
-
-func abs(x int) int {
-	if x < 0 {
-		return -x
-	}
-	return x
 }
 
 func dxy(dir byte) (int, int) {
