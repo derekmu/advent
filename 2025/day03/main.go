@@ -11,13 +11,11 @@ var Input []byte
 var Problem = util.Problem{Year: "2025", Day: "03", Runner: Run, Input: Input}
 
 func parseInput(input []byte) (lines [][]byte) {
-	ilines := util.ParseInputLines(input)
-	lines = make([][]byte, len(ilines))
-	for i, iline := range ilines {
-		line := make([]byte, len(iline))
-		lines[i] = line
-		for i := range iline {
-			line[i] = iline[i] - '0'
+	input = util.CopyInput(input)
+	lines = util.ParseInputLines(input)
+	for _, line := range lines {
+		for i := range line {
+			line[i] -= '0'
 		}
 	}
 	return lines
