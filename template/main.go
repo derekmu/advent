@@ -8,7 +8,7 @@ import (
 
 //go:embed input.txt
 var Input []byte
-var Problem = util.Problem{Year: "2023", Day: "XX", Runner: Run, Input: Input}
+var Problem = util.Problem{Year: "2025", Day: "XX", Runner: Run, Input: Input}
 
 func parseInput(input []byte) (lines [][]byte) {
 	lines = util.ParseInputLines(input)
