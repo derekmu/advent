@@ -6,7 +6,7 @@ import (
 	"testing"
 )
 
-type runner func(input []byte) (*util.Result, error)
+type runner func(input []byte) (util.Result, error)
 
 func RunInput(t testing.TB, run runner, input []byte, p1, p2 any) {
 	result, err := run(input)

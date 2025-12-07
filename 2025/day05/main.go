@@ -70,7 +70,6 @@ func Run(input []byte) (util.Result, error) {
 	start := time.Now()
 
 	fresh, available := parseInput(input)
-	_, _ = fresh, available
 
 	parse := time.Now()
 
