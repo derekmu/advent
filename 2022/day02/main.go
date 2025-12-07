@@ -39,7 +39,7 @@ var (
 	}
 )
 
-func Run(input []byte) (*util.Result, error) {
+func Run(input []byte) (util.Result, error) {
 	start := time.Now()
 
 	parse := time.Now()
@@ -52,7 +52,7 @@ func Run(input []byte) (*util.Result, error) {
 	for scanner.Scan() {
 		theirChoice := choiceMap[scanner.Text()]
 		if !scanner.Scan() {
-			return nil, errors.New("missing second token")
+			return util.Result{}, errors.New("missing second token")
 		}
 		me := scanner.Text()
 		myChoice := choiceMap[me]
@@ -81,7 +81,7 @@ func Run(input []byte) (*util.Result, error) {
 
 	end := time.Now()
 
-	return &util.Result{
+	return util.Result{
 		Part1:     part1,
 		Part2:     part2,
 		StartTime: start,

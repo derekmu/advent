@@ -45,6 +45,7 @@ import (
 	day2503 "advent/2025/day03"
 	day2504 "advent/2025/day04"
 	day2505 "advent/2025/day05"
+	day2506 "advent/2025/day06"
 	"advent/util"
 	"context"
 	"log"
@@ -101,6 +102,7 @@ var problems = []util.Problem{
 	day2503.Problem,
 	day2504.Problem,
 	day2505.Problem,
+	day2506.Problem,
 }
 
 func main() {
@@ -124,7 +126,7 @@ func main() {
 		HideHelpCommand: true,
 		Commands:        yearCommands,
 		Action: func(_ context.Context, _ *cli.Command) error {
-			var results []*util.Result
+			var results []util.Result
 			for _, p := range problems {
 				result, err := p.Runner(p.Input)
 				if err != nil {
@@ -148,7 +150,7 @@ func makeYearCommand(year string) *cli.Command {
 	return &cli.Command{
 		Name: year,
 		Action: func(_ context.Context, _ *cli.Command) error {
-			var results []*util.Result
+			var results []util.Result
 			for _, p := range problems {
 				if p.Year == year {
 					result, err := p.Runner(p.Input)

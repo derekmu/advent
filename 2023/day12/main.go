@@ -62,7 +62,7 @@ func parseInput(input []byte) (springs []*spring) {
 	return springs
 }
 
-func Run(input []byte) (*util.Result, error) {
+func Run(input []byte) (util.Result, error) {
 	start := time.Now()
 
 	springs := parseInput(input)
@@ -103,7 +103,7 @@ func Run(input []byte) (*util.Result, error) {
 
 	end := time.Now()
 
-	return &util.Result{
+	return util.Result{
 		Part1:     part1,
 		Part2:     part2,
 		StartTime: start,

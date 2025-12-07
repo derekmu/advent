@@ -23,7 +23,7 @@ var words = [][]byte{
 	[]byte("nine"),
 }
 
-func Run(input []byte) (*util.Result, error) {
+func Run(input []byte) (util.Result, error) {
 	start := time.Now()
 
 	lines := util.ParseInputLines(input)
@@ -39,7 +39,7 @@ func Run(input []byte) (*util.Result, error) {
 
 	end := time.Now()
 
-	return &util.Result{
+	return util.Result{
 		Part1:     part1,
 		Part2:     part2,
 		StartTime: start,

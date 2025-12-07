@@ -89,7 +89,7 @@ func (d *directory) getSmallestDirToDelete(minSize, haveSize int) int {
 	return haveSize
 }
 
-func Run(input []byte) (*util.Result, error) {
+func Run(input []byte) (util.Result, error) {
 	start := time.Now()
 
 	root := &directory{
@@ -116,7 +116,7 @@ func Run(input []byte) (*util.Result, error) {
 			} else if bytes.Equal(command, []byte("ls")) {
 				lsing = true
 			} else {
-				return nil, errors.New(fmt.Sprintf("unrecognized command: %s", line[2:4]))
+				return util.Result{}, errors.New(fmt.Sprintf("unrecognized command: %s", line[2:4]))
 			}
 		} else if lsing {
 			if bytes.Equal(line[0:3], []byte("dir")) {
@@ -129,7 +129,7 @@ func Run(input []byte) (*util.Result, error) {
 				cd.getFile(fileName, size)
 			}
 		} else {
-			return nil, errors.New(fmt.Sprintf("unrecognized line: %s", line))
+			return util.Result{}, errors.New(fmt.Sprintf("unrecognized line: %s", line))
 		}
 	}
 
@@ -145,7 +145,7 @@ func Run(input []byte) (*util.Result, error) {
 
 	end := time.Now()
 
-	return &util.Result{
+	return util.Result{
 		Part1:     part1,
 		Part2:     part2,
 		StartTime: start,

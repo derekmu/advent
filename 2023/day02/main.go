@@ -61,12 +61,12 @@ func parseInput(input []byte) ([]*game, error) {
 	return games, nil
 }
 
-func Run(input []byte) (*util.Result, error) {
+func Run(input []byte) (util.Result, error) {
 	start := time.Now()
 
 	games, err := parseInput(input)
 	if err != nil {
-		return nil, err
+		return util.Result{}, err
 	}
 
 	parse := time.Now()
@@ -98,7 +98,7 @@ func Run(input []byte) (*util.Result, error) {
 
 	end := time.Now()
 
-	return &util.Result{
+	return util.Result{
 		Part1:     part1,
 		Part2:     part2,
 		StartTime: start,

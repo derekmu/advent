@@ -143,7 +143,7 @@ func parseInput(input []byte) (workflows map[uint32]workflow, parts []part) {
 	return workflows, parts
 }
 
-func Run(input []byte) (*util.Result, error) {
+func Run(input []byte) (util.Result, error) {
 	start := time.Now()
 
 	workflows, parts := parseInput(input)
@@ -204,7 +204,7 @@ func Run(input []byte) (*util.Result, error) {
 
 	end := time.Now()
 
-	return &util.Result{
+	return util.Result{
 		Part1:     part1,
 		Part2:     part2,
 		StartTime: start,

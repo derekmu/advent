@@ -58,7 +58,7 @@ func parseInput(input []byte) (poly1 []image.Point, moves1 int, poly2 []image.Po
 	return poly1, moves1, poly2, moves2
 }
 
-func Run(input []byte) (*util.Result, error) {
+func Run(input []byte) (util.Result, error) {
 	start := time.Now()
 
 	poly1, count1, poly2, count2 := parseInput(input)
@@ -70,7 +70,7 @@ func Run(input []byte) (*util.Result, error) {
 
 	end := time.Now()
 
-	return &util.Result{
+	return util.Result{
 		Part1:     part1,
 		Part2:     part2,
 		StartTime: start,

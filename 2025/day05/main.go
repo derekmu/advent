@@ -66,7 +66,7 @@ func parseInput(input []byte) (fresh []idRange, available []int) {
 	return fresh, available
 }
 
-func Run(input []byte) (*util.Result, error) {
+func Run(input []byte) (util.Result, error) {
 	start := time.Now()
 
 	fresh, available := parseInput(input)
@@ -97,7 +97,7 @@ out:
 
 	end := time.Now()
 
-	return &util.Result{
+	return util.Result{
 		Part1:     part1,
 		Part2:     part2,
 		StartTime: start,

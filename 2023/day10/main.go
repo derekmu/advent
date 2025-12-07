@@ -66,7 +66,7 @@ func parseInput(input []byte) (lines [][]byte, starter pather) {
 	return lines, starter
 }
 
-func Run(input []byte) (*util.Result, error) {
+func Run(input []byte) (util.Result, error) {
 	start := time.Now()
 
 	lines, starter := parseInput(input)
@@ -144,7 +144,7 @@ func Run(input []byte) (*util.Result, error) {
 
 	end := time.Now()
 
-	return &util.Result{
+	return util.Result{
 		Part1:     part1,
 		Part2:     part2,
 		StartTime: start,

@@ -49,7 +49,7 @@ func parseInput(input []byte) ([][]byte, []*number, map[index][]int) {
 	return lines, numbers, gearMap
 }
 
-func Run(input []byte) (*util.Result, error) {
+func Run(input []byte) (util.Result, error) {
 	start := time.Now()
 
 	lines, numbers, gearMap := parseInput(input)
@@ -93,7 +93,7 @@ func Run(input []byte) (*util.Result, error) {
 
 	end := time.Now()
 
-	return &util.Result{
+	return util.Result{
 		Part1:     part1,
 		Part2:     part2,
 		StartTime: start,

@@ -12,7 +12,7 @@ import (
 type Problem struct {
 	Year   string
 	Day    string
-	Runner func([]byte) (*Result, error)
+	Runner func([]byte) (Result, error)
 	Input  []byte
 }
 
@@ -26,7 +26,7 @@ type Result struct {
 	EndTime   time.Time
 }
 
-func PrintResults(results ...*Result) {
+func PrintResults(results ...Result) {
 	table := tablewriter.NewWriter(os.Stdout)
 	table.Header([]string{"Year", "Day", "Part 1", "Part 2", "Parse", "Execute", "Total"})
 	for _, result := range results {
