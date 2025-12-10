@@ -3,6 +3,7 @@ package day2502
 import (
 	"advent/util"
 	_ "embed"
+	"sync"
 	"time"
 )
 
@@ -15,14 +16,15 @@ type idRange struct {
 	endInt   int
 }
 
-var comma = []byte{','}
-var dash = []byte{'-'}
+type result struct {
+	part1, part2 int
+}
 
 func parseInput(input []byte) (ranges []idRange) {
-	rangesBytes := util.ParseInputDelimiter(input, comma)
+	rangesBytes := util.ParseInputDelimiter(input, []byte(","))
 	ranges = make([]idRange, len(rangesBytes))
 	for i, rangeBytes := range rangesBytes {
-		rangeParts := util.ParseInputDelimiter(rangeBytes, dash)
+		rangeParts := util.ParseInputDelimiter(rangeBytes, []byte("-"))
 		if len(rangeParts) != 2 {
 			panic("Invalid input")
 		}
@@ -44,16 +46,27 @@ func Run(input []byte) (util.Result, error) {
 	part1 := 0
 	part2 := 0
 
-	for _, r := range ranges {
-		for id := r.startInt; id <= r.endInt; id++ {
-			p1, p2 := invalidTest(id)
-			if p1 {
-				part1 += id
+	var wg sync.WaitGroup
+	results := make([]result, len(ranges))
+	for i, r := range ranges {
+		wg.Add(1)
+		go func(i int, r idRange) {
+			defer wg.Done()
+			for id := r.startInt; id <= r.endInt; id++ {
+				p1, p2 := invalidTest(id)
+				if p1 {
+					results[i].part1 += id
+				}
+				if p2 {
+					results[i].part2 += id
+				}
 			}
-			if p2 {
-				part2 += id
-			}
-		}
+		}(i, r)
+	}
+	wg.Wait()
+	for _, r := range results {
+		part1 += r.part1
+		part2 += r.part2
 	}
 
 	end := time.Now()
