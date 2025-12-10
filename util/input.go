@@ -7,7 +7,9 @@ import (
 var newline = []byte{'\n'}
 
 // CopyInput creates a new byte slice that's a copy of the input.
-// This is useful on problems where the input is manipulated, and you don't want to change the underlying embedded byte slice.
+//
+// This is useful on problems where the input is changed for some reason.
+// You shouldn't  change the underlying embedded byte slice values.
 func CopyInput(input []byte) []byte {
 	inputCopy := make([]byte, len(input))
 	copy(inputCopy, input)
