@@ -47,9 +47,9 @@ func Run(input []byte) (util.Result, error) {
 	part2 := 0
 
 	var wg sync.WaitGroup
+	wg.Add(len(ranges))
 	results := make([]result, len(ranges))
 	for i, r := range ranges {
-		wg.Add(1)
 		go func(i int, r idRange) {
 			defer wg.Done()
 			for id := r.startInt; id <= r.endInt; id++ {

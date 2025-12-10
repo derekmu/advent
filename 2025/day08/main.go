@@ -119,15 +119,11 @@ func connect(boxes []box, bi1 int, bi2 int) (part2 int) {
 	if c1 == c2 {
 		return -1
 	}
-	// combine all the boxes in both circuits
-	bis := make([]int, 0, len(c1.bis)+len(c2.bis))
-	bis = append(bis, c1.bis...)
-	bis = append(bis, c2.bis...)
-	if len(bis) == len(boxes) {
+	if len(c1.bis)+len(c2.bis) == len(boxes) {
 		return boxes[bi1].x * boxes[bi2].x
 	}
 	// update box 1's circuit
-	c1.bis = bis
+	c1.bis = append(c1.bis, c2.bis...)
 	// for everything in box 2's circuit, move them to box 1's circuit
 	for _, bi := range c2.bis {
 		boxes[bi].circuit = c1

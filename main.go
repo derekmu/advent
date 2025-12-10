@@ -112,7 +112,7 @@ var problems = []util.Problem{
 }
 
 func main() {
-	log.SetFlags(log.Lshortfile | log.Ldate | log.Ltime)
+	log.SetFlags(log.Llongfile | log.Lmicroseconds)
 
 	var yearCommands []*cli.Command
 	yearMap := make(map[string]*cli.Command)
