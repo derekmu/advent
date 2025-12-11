@@ -49,6 +49,7 @@ import (
 	day2507 "advent/2025/day07"
 	day2508 "advent/2025/day08"
 	day2509 "advent/2025/day09"
+	day2510 "advent/2025/day10"
 	"advent/util"
 	"context"
 	"log"
@@ -109,6 +110,7 @@ var problems = []util.Problem{
 	day2507.Problem,
 	day2508.Problem,
 	day2509.Problem,
+	day2510.Problem,
 }
 
 func main() {
