@@ -3,6 +3,7 @@ module advent
 go 1.24.0
 
 require (
+	github.com/dominikbraun/graph v0.23.0
 	github.com/olekukonko/tablewriter v1.1.2
 	github.com/urfave/cli/v3 v3.6.1
 )
